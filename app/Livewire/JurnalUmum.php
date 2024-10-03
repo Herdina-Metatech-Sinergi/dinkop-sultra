@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\IdentitasKoperasi;
 use App\Models\JurnalUmum as ModelsJurnalUmum;
 use App\Models\MasterCoa;
 use Carbon\Carbon;
@@ -74,7 +75,9 @@ class JurnalUmum extends Component implements HasForms, HasTable
                     TextInput::make('filters.tgl_akhir')->lazy()
                         ->required()
                         ->type('date'),
-                    Select::make('filters.identitas_koperasi_id')->relationship('identitas_koperasi', 'nama_koperasi')->searchable()->required()
+                    Select::make('filters.identitas_koperasi_id')->options(IdentitasKoperasi::when(!auth()->user()->hasRole('Admin'), function($q){
+                        // $q->where('id',auth()->user()->);
+                    })->get()->pluck('nama_koperasi','id'))->searchable()->required()
             ])])->model(ModelsJurnalUmum::class);
     }
 

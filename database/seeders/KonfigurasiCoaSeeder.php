@@ -34,6 +34,20 @@ class KonfigurasiCoaSeeder extends Seeder
         ]);
 
         KonfigurasiCOA::create([
+            'nama' => 'Bayar Simpanan Wajib Tarik',
+            'akun' => '32',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Bayar Simpanan Wajib Tarik',
+            'akun' => '1101',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
             'nama' => 'Bayar Setoran Sukarela',
             'akun' => '1101',
             'persen' => '100',
@@ -43,6 +57,20 @@ class KonfigurasiCoaSeeder extends Seeder
         KonfigurasiCOA::create([
             'nama' => 'Bayar Setoran Sukarela',
             'akun' => '33',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Bayar Setoran Sukarela Tarik',
+            'akun' => '33',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Bayar Setoran Sukarela Tarik',
+            'akun' => '1101',
             'persen' => '100',
             'd_k' => 'kredit',
         ]);
@@ -73,6 +101,20 @@ class KonfigurasiCoaSeeder extends Seeder
         KonfigurasiCOA::create([
             'nama' => 'Bayar Simpanan Pokok',
             'akun' => '31',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Bayar Simpanan Pokok Tarik',
+            'akun' => '31',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Bayar Simpanan Pokok Tarik',
+            'akun' => '1101',
             'persen' => '100',
             'd_k' => 'kredit',
         ]);

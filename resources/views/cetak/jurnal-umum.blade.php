@@ -38,9 +38,9 @@
                 @endphp
 
                 <td style="text-align: center">
-                    <p style="margin-bottom: 0px; font-size: 18px;">{{$jrn['identitas_koperasi']['nama_koperasi']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$jrn['identitas_koperasi']['alamat']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">Telepon {{$jrn['identitas_koperasi']['telp_fax_email']}}</p>
+                    <p style="margin-bottom: 0px; font-size: 18px;">{{@$jrn['identitas_koperasi']['nama_koperasi']}}</p>
+                    <p style="margin-bottom: 0px; font-size: 14px;">{{@$jrn['identitas_koperasi']['alamat']}}</p>
+                    <p style="margin-bottom: 0px; font-size: 14px;">Telepon {{@$jrn['identitas_koperasi']['telp_fax_email']}}</p>
                 </td>
             </tr>
         </table>
@@ -81,8 +81,8 @@
                             <td style="vertical-align: top;border-right: 1px solid; {{($key2 == 0) ? 'border-top: 1px solid;' : ''}}">
                                 {{ @$item['coa']['title'] }}
                                 @if (@$item['deskripsi'])
-                                    <br>
-                                    ({{ @$item['deskripsi'] }})
+                                    {{-- <br>
+                                    ({{ @$item['deskripsi'] }}) --}}
                                 @else
                                     &nbsp;
                                 @endif
@@ -117,8 +117,8 @@
 
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ @$item['coa']['title'] }}
                                 @if (@$item['deskripsi'])
-                                    <br>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;({{ @$item['deskripsi'] }})
+                                    {{-- <br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;({{ @$item['deskripsi'] }}) --}}
                                 @else
                                     &nbsp;
                                 @endif

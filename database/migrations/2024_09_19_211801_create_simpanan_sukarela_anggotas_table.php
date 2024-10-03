@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('tanggal')->nullable();
             $table->integer('nominal')->nullable();
+            $table->string('d_k')->default('debet');
+            $table->string('deskripsi')->nullable();
             $table->unsignedBigInteger('anggota_koperasi_id');
             $table->foreign('anggota_koperasi_id')->references('id')->on('anggota_koperasis')->onDelete('cascade');
             $table->timestamps();

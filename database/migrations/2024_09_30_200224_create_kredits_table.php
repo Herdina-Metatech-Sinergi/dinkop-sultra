@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('simpanan_wajib_anggotas', function (Blueprint $table) {
+        Schema::create('kredits', function (Blueprint $table) {
             $table->id();
-            $table->string('tanggal')->nullable();
-            $table->integer('nominal')->nullable();
-            $table->string('d_k')->default('debet');
-            $table->string('deskripsi')->nullable();
+            $table->string('kredit');
+            $table->string('keterangan')->nullable();
+            $table->integer('nominal_pinjaman')->nullable();
+            $table->integer('dp')->nullable();
+            $table->integer('nominal_pinjaman_margin')->nullable();
+            $table->integer('tenor')->default(1);
             $table->unsignedBigInteger('anggota_koperasi_id');
             $table->foreign('anggota_koperasi_id')->references('id')->on('anggota_koperasis')->onDelete('cascade');
             $table->timestamps();
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('simpanan_wajib_anggotas');
+        Schema::dropIfExists('kredits');
     }
 };

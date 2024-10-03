@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnggotaKoperasiResource\Pages;
 use App\Filament\Resources\AnggotaKoperasiResource\RelationManagers;
+use App\Filament\Resources\AnggotaKoperasiResource\Widgets\AnggotaKoperasiDetailWidget;
 use App\Models\AnggotaKoperasi;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -11,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -30,8 +32,10 @@ class AnggotaKoperasiResource extends Resource
             ->schema([
                 Select::make('identitas_koperasi_id')->relationship('identitas_koperasi', 'nama_koperasi')->required()->searchable(),
                 Forms\Components\TextInput::make('no_anggota')
-                    ->readOnly()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('ktp')
+                    ->numeric()
+                    ->maxLength(16),
                 Forms\Components\TextInput::make('nama')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('alamat')
@@ -44,6 +48,8 @@ class AnggotaKoperasiResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->maxLength(255),
+                Forms\Components\DatePicker::make('tgl_masuk'),
+                Forms\Components\DatePicker::make('tgl_keluar'),
             ]);
     }
 
@@ -87,7 +93,7 @@ class AnggotaKoperasiResource extends Resource
                     return redirect('admin/anggota-koperasis/'.$record->id.'/detail');
                 }),
 
-            ])
+            ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -111,4 +117,10 @@ class AnggotaKoperasiResource extends Resource
             'detail' => Pages\AnggotaKoperasiDetail::route('/{record}/detail'),
         ];
     }
+
+    // public static function getWidgets(): array
+    // {
+    //     return [
+    //     ];
+    // }
 }

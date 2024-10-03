@@ -57,6 +57,7 @@ class Controller extends BaseController
                 'nominal' => $nom,
                 'user_id' => auth()->user()->id,
                 'jurnal' => $jurnal_kode ?? $jurnal,
+                'identitas_koperasi_id' => $anggota->identitas_koperasi_id
             ]);
 
         }

@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('simpanan_wajib_anggotas', function (Blueprint $table) {
+        Schema::create('kredit_angsurans', function (Blueprint $table) {
             $table->id();
-            $table->string('tanggal')->nullable();
+            $table->date('tgl')->nullable();
+            $table->string('angsuran')->nullable();
+            $table->string('status')->default('Belum Lunas');
             $table->integer('nominal')->nullable();
-            $table->string('d_k')->default('debet');
-            $table->string('deskripsi')->nullable();
-            $table->unsignedBigInteger('anggota_koperasi_id');
-            $table->foreign('anggota_koperasi_id')->references('id')->on('anggota_koperasis')->onDelete('cascade');
+            $table->unsignedBigInteger('kredit_id');
+            $table->foreign('kredit_id')->references('id')->on('kredits')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('simpanan_wajib_anggotas');
+        Schema::dropIfExists('kredit_angsurans');
     }
 };
