@@ -63,7 +63,7 @@
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">
-                        &nbsp;&nbsp;&nbsp;-{{$item['data']['nama_coa']}} ({{$item['data']['kode_coa']}})
+                        &nbsp;&nbsp;&nbsp;-{{$item['data']['title']}} ({{$item['data']['kode_coa']}})
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
@@ -83,7 +83,7 @@
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">
-                        &nbsp;&nbsp;&nbsp;-{{$item['data']['nama_coa']}} ({{$item['data']['kode_coa']}})
+                        &nbsp;&nbsp;&nbsp;-{{$item['data']['title']}} ({{$item['data']['kode_coa']}})
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
@@ -131,7 +131,7 @@
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">
-                        &nbsp;&nbsp;&nbsp;-{{$item['data']['nama_coa']}} ({{$item['data']['kode_coa']}})
+                        &nbsp;&nbsp;&nbsp;-{{$item['data']['title']}} ({{$item['data']['kode_coa']}})
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
@@ -193,7 +193,7 @@
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">
-                        &nbsp;&nbsp;&nbsp;-{{$item['data']['nama_coa']}} ({{$item['data']['kode_coa']}})
+                        &nbsp;&nbsp;&nbsp;-{{$item['data']['title']}} ({{$item['data']['kode_coa']}})
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
