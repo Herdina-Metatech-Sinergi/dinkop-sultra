@@ -14,4 +14,16 @@ class KonfigurasiCOA extends Page
 
     protected static ?string $navigationGroup = 'Akuntansi';
 
+    public function mount(): void
+    {
+        abort_unless(auth()->user()->hasRole(['Admin Dinkop']), 403);
+    }
+
+    // Menyembunyikan menu untuk role tertentu
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Hanya menampilkan menu jika pengguna memiliki role 'Admin Dinkop'
+        return auth()->user()->hasRole('Admin Dinkop');
+    }
+
 }

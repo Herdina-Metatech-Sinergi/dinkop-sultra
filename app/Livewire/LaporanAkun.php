@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\IdentitasKoperasi;
 use App\Models\JurnalUmum;
 use Carbon\Carbon;
 use Filament\Forms\Components\Grid;
@@ -34,7 +35,17 @@ class LaporanAkun extends Component implements HasForms
                     TextInput::make('filters.tgl_akhir')->lazy()
                         ->required()
                         ->type('date'),
-                    Select::make('filters.identitas_koperasi_id')->relationship('identitas_koperasi', 'nama_koperasi')->searchable()->required()
+                    Select::make('filters.identitas_koperasi_id')->options(function () {
+                        // Cek apakah user memiliki role "Admin"
+                        if (auth()->user()->hasRole('Admin')) {
+                            // Jika user adalah Admin, tampilkan semua opsi
+                            return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                        } else {
+                            // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                            return IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                    ->pluck('nama_koperasi', 'id');
+                        }
+                    })->searchable()->required()
             ])])->model(JurnalUmum::class);
     }
 

@@ -17,8 +17,6 @@ class KonfigurasiCoaSeeder extends Seeder
     public function run()
     {
 
-
-
         KonfigurasiCOA::create([
             'nama' => 'Bayar Simpanan Wajib',
             'akun' => '1101',
@@ -48,28 +46,28 @@ class KonfigurasiCoaSeeder extends Seeder
         ]);
 
         KonfigurasiCOA::create([
-            'nama' => 'Bayar Setoran Sukarela',
+            'nama' => 'Bayar Simpanan Non Modal',
             'akun' => '1101',
             'persen' => '100',
             'd_k' => 'debet',
         ]);
 
         KonfigurasiCOA::create([
-            'nama' => 'Bayar Setoran Sukarela',
+            'nama' => 'Bayar Simpanan Non Modal',
             'akun' => '33',
             'persen' => '100',
             'd_k' => 'kredit',
         ]);
 
         KonfigurasiCOA::create([
-            'nama' => 'Bayar Setoran Sukarela Tarik',
+            'nama' => 'Bayar Simpanan Non Modal Tarik',
             'akun' => '33',
             'persen' => '100',
             'd_k' => 'debet',
         ]);
 
         KonfigurasiCOA::create([
-            'nama' => 'Bayar Setoran Sukarela Tarik',
+            'nama' => 'Bayar Simpanan Non Modal Tarik',
             'akun' => '1101',
             'persen' => '100',
             'd_k' => 'kredit',
@@ -115,6 +113,48 @@ class KonfigurasiCoaSeeder extends Seeder
         KonfigurasiCOA::create([
             'nama' => 'Bayar Simpanan Pokok Tarik',
             'akun' => '1101',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam',
+            'akun' => '1108',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam',
+            'akun' => '1101',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam Pokok',
+            'akun' => '1101',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam Pokok',
+            'akun' => '1108',
+            'persen' => '100',
+            'd_k' => 'kredit',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam Bunga',
+            'akun' => '1101',
+            'persen' => '100',
+            'd_k' => 'debet',
+        ]);
+
+        KonfigurasiCOA::create([
+            'nama' => 'Pinjam Bunga',
+            'akun' => '4101',
             'persen' => '100',
             'd_k' => 'kredit',
         ]);

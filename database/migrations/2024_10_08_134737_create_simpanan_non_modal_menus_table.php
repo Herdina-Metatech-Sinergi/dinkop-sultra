@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('simpanan_non_modal_menus', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->foreignId('user_id_create')->nullable()->references('id')->on('users');
-
+            $table->foreignId('identitas_koperasi_id')->constrained('identitas_koperasis');
+            $table->string('nama_menu');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('simpanan_non_modal_menus');
     }
 };

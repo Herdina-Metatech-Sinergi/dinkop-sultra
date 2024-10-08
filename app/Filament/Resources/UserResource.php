@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Role;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -37,7 +38,18 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Select::make('roles')
                     ->multiple()
-                    ->relationship('roles', 'name')->preload(),
+                    ->options(function () {
+                        // Cek apakah user memiliki role "Admin"
+                        if (auth()->user()->hasRole('Admin')) {
+                            // Jika user adalah Admin, tampilkan semua opsi
+                            return Role::get()->pluck('name', 'id');
+                        } else {
+                            // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                            return Role::whereNotIn('name',['Admin Dinkop','Viewer Dinkop'])
+                                                    ->pluck('name', 'id');
+                        }
+                    })
+                    ->preload(),
 
                 Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
@@ -95,5 +107,17 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        if (auth()->user()->hasRole('Admin Dinkop')) {
+            // Jika user adalah Admin, tampilkan semua opsi
+            return parent::getEloquentQuery();
+        } else {
+            // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+            return parent::getEloquentQuery()
+            ->where('user_id_create', auth()->user()->id);
+        }
     }
 }

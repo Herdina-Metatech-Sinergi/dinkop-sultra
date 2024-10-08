@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AnggotaKoperasi;
 use App\Models\Kredit;
 use App\Models\KreditAngsuran;
+use App\Models\SimpananNonModalData;
+use App\Models\SimpananNonModalMenu;
 use App\Models\SimpananPokokAnggota;
 use App\Models\SimpananSukarelaAnggota;
 use App\Models\SimpananWajibAnggota;
@@ -37,9 +39,17 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     // public $nominal,$tanggal;
 
     public ?array $data = [];
+    public $non_modal_menus = [];
+    public $new_menu_name;
+    public $menu_id;
+
 
     public function mount($anggota_id){
         $this->anggota_id = $anggota_id;
+
+        // Fetch anggota details and menus
+        $this->anggota = AnggotaKoperasi::where('id', $anggota_id)->first();
+        $this->non_modal_menus = SimpananNonModalMenu::all();  // Fetch existing dynamic menus
 
         $this->anggota = AnggotaKoperasi::where('id',$anggota_id)->first();
         $this->formHeader->fill();
@@ -48,7 +58,95 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananSukarela->fill();
         $this->formKredit->fill();
 
+        $this->menu_id = SimpananNonModalMenu::first()->id ?? null;
+
     }
+
+    public function setMenu($menu_id){
+        $this->menu_id = $menu_id;
+    }
+    // Function to add new dynamic menu
+    public function addNewMenu()
+    {
+        $this->validate([
+            'new_menu_name' => 'required|string|max:255',
+        ]);
+
+        // Create new menu in the database
+        $menu = SimpananNonModalMenu::create(['nama_menu' => $this->new_menu_name,'identitas_koperasi_id' => $this->anggota->identitas_koperasi_id]);
+
+        // Refresh menus
+        $this->non_modal_menus = SimpananNonModalMenu::all();
+
+        // Clear input
+        $this->new_menu_name = '';
+
+        if (SimpananNonModalMenu::count() == 1) {
+            # code...
+            $this->menu_id = $menu->id;
+        }
+
+        Notification::make()->title('Menu baru berhasil ditambahkan!')->success()->send();
+    }
+
+    // Forms for each menu will be generated dynamically
+    public function formSimpananNonModal(Form $form): Form
+    {
+        return $form->schema([
+            Grid::make(4)->schema([
+                TextInput::make('nominal')->numeric()->required(),
+                DatePicker::make('tanggal')->required(),
+                Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Debet', 'Kredit' => 'Kredit'])->required(),
+                TextInput::make('deskripsi'),
+            ]),
+        ])->model(SimpananNonModalData::class)
+          ->statePath('data_' . $this->menu_id);  // Different state for each menu
+    }
+
+    // Submit form for each dynamic menu
+    public function submitSimpananNonModal()
+    {
+        // $data = $this->{'formSimpananSukarela'}->getState();
+        // $data['menu_id'] = $this->menu_id;
+        // $data['anggota_koperasi_id'] = $this->anggota_id;
+
+        // SimpananNonModalData::create($data);
+
+        // Notification::make()->title('Data simpanan berhasil disubmit!')->success()->send();
+
+        $data = $this->formSimpananSukarela->getState();
+        $data['anggota_koperasi_id'] = $this->anggota_id;
+        $data['menu_id'] = $this->menu_id;
+
+
+        if ($this->simsem_id) {
+            # code...
+            $simpok = SimpananNonModalData::where('id',$this->simsem_id)->update($data);
+            $simpok = SimpananNonModalData::where('id',$this->simsem_id)->first();
+
+        }else{
+            $simpok = SimpananNonModalData::create($data);
+
+        }
+
+        $controller = new Controller();
+        if ($data['d_k'] == 'Debet') {
+
+            $controller->jurnal_umum('Bayar Simpanan Non Modal',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+        }else{
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+
+        }
+        $this->simpok_id = null;
+        $this->simwa_id = null;
+        $this->simsem_id = null;
+        $this->formHeader->fill();
+        $this->formSimpananPokok->fill();
+        $this->formSimpananWajib->fill();
+        $this->formSimpananSukarela->fill();
+        return Notification::make()->title('Berhasil disubmit!')->success()->send();
+    }
+
 
     protected function getForms(): array
     {
@@ -58,6 +156,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             'formSimpananWajib',
             'formSimpananSukarela',
             'formKredit',
+            'formSimpananNonModal'
         ];
     }
 
@@ -109,20 +208,37 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         return $form
             ->schema([
                 Grid::make(2)->schema([
-                    TextInput::make('kredit')->required(),
-                    TextInput::make('keterangan')->required(),
+                    TextInput::make('kredit')->required()->label('Jenis Kredit'),
+                    TextInput::make('keterangan')->required()->label('Keterangan'),
+                ]),
+                Grid::make(4)->schema([
+                    // Principal Loan Amount (Pinjaman Pokok)
+                    TextInput::make('nominal_pinjaman')->numeric()->required()->label('Nominal Pinjaman Pokok'),
 
-                 ]),
-                 Grid::make(4)->schema([
-                    TextInput::make('nominal_pinjaman')->numeric()->required(),
-                    TextInput::make('dp')->numeric()->required(),
-                    TextInput::make('nominal_pinjaman_margin')->label('Nominal Pinjaman + Margin')->numeric()->required(),
-                    TextInput::make('tenor')->label('Tenor (bulan)')->numeric()->required(),
-                 ]),
+                    // Interest rate (Suku Bunga)
+                    TextInput::make('interest_rate')
+                        ->numeric()
+                        ->required()
+                        ->label('Suku Bunga per bulan (%)'),
 
+                    // Number of Installments (Jangka Waktu)
+                    TextInput::make('num_installments')
+                        ->numeric()
+                        ->required()
+                        ->label('Jangka Waktu (bulan)'),
+                        // Monthly Installment (Angsuran/Bulan)
+                    TextInput::make('angsuran_bulan')
+                        ->numeric()
+                        ->disabled()  // This field is calculated, so it's disabled for manual input
+                        ->label('Angsuran/Bulan')
+                        ->helperText('Automatically calculated'),
+                ]),
             ])
-            ->model(Kredit::class)->statePath('data');
+            ->model(Kredit::class)
+            ->statePath('data');
     }
+
+
 
     public function formSimpananWajib(Form $form): Form
     {
@@ -149,51 +265,81 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $data['anggota_koperasi_id'] = $this->anggota_id;
 
         if ($this->kredit_id) {
-            # code...
-            $simpok = Kredit::where('id',$this->kredit_id)->update($data);
-            $simpok = Kredit::where('id',$this->kredit_id)->first();
+            $simpok = Kredit::where('id', $this->kredit_id)->update($data);
+            $simpok = Kredit::where('id', $this->kredit_id)->first();
             $k_id = $this->kredit_id;
-
-        }else{
+        } else {
             $simpok = Kredit::create($data);
             $k_id = $simpok->id;
         }
 
-        KreditAngsuran::where('kredit_id',$k_id)->delete();
-        KreditAngsuran::create([
-            'angsuran' => 'DP',
-            'nominal' => $data['dp'],
-            'kredit_id' => $k_id
-        ]);
+        // Loan data from the form
+        $principal = $data['nominal_pinjaman'];  // Principal amount
+        $interest_rate = $data['interest_rate']; // Monthly interest rate
+        $num_installments = $data['num_installments'];  // Number of installments
 
-        $perbulan = ($data['nominal_pinjaman_margin'] - $data['dp']) / $data['tenor'];
+        // Calculate the monthly installment (Angsuran/Bulan)
+        $monthly_interest = $interest_rate / 100 * $principal;
+        $total_installment = ($principal / $num_installments) + $monthly_interest;
 
-        for ($i=1; $i <= $data['tenor'] ; $i++) {
-            # code...
+        // Save the calculated monthly installment
+        $simpok->angsuran_bulan = $total_installment;
+        $simpok->save();
+
+        // Loop through each installment and create KreditAngsuran entries (if needed)
+        for ($i = 1; $i <= $num_installments; $i++) {
             KreditAngsuran::create([
-                'angsuran' => 'Angsuran ke-'.$i,
-                'nominal' => $perbulan,
-                'kredit_id' => $k_id
+                'angsuran_ke' => $i,
+                'nominal_pokok' => $principal / $num_installments,
+                'nominal_bunga' => $monthly_interest,
+                'jumlah_angsuran' => $total_installment,
+                'baki_debet' => $principal - ($i * ($principal / $num_installments)),
+                'kredit_id' => $k_id,
+                'tanggal_jatuh_tempo' => now()->addMonths($i),  // Set the due date
             ]);
         }
 
         $controller = new Controller();
-            # code...
-            // $controller->jurnal_umum('Bayar Simpanan Pokok',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+        $controller->jurnal_umum('Pinjam', $data['nominal_pinjaman'], $this->anggota_id, null, null, $simpok->created_at);
 
-
-
+        // Reset form
         $this->kredit_id = null;
-        $this->simwa_id = null;
-        $this->simsem_id = null;
         $this->formHeader->fill();
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
         $this->formKredit->fill();
-        return Notification::make()->title('Berhasil disubmit!')->success()->send();
 
+        return Notification::make()->title('Berhasil disubmit!')->success()->send();
     }
+
+    public function goBayarAngsuranPokok($id)
+    {
+        $kredit_angsuran = KreditAngsuran::where('id', $id)->first();
+        $kredit = Kredit::where('id',$kredit_angsuran->kredit_id)->first();
+        $controller = new Controller();
+        $controller->jurnal_umum('Pinjam Pokok', $kredit_angsuran->nominal_pokok, $kredit->anggota_koperasi_id, null, null, $kredit_angsuran->tanggal_jatuh_tempo);
+        // Mark the principal installment (Angsuran Pokok) as paid
+        KreditAngsuran::where('id', $id)->update(['status_pokok' => 'Lunas']);
+
+        // Add notification or any additional logic
+        Notification::make()->title('Angsuran Pokok berhasil dilunasi!')->success()->send();
+    }
+
+    public function goBayarAngsuranBunga($id)
+    {
+        $kredit_angsuran = KreditAngsuran::where('id', $id)->first();
+        $kredit = Kredit::where('id',$kredit_angsuran->kredit_id)->first();
+        $controller = new Controller();
+        $controller->jurnal_umum('Pinjam Bunga', $kredit_angsuran->nominal_bunga, $kredit->anggota_koperasi_id, null, null, $kredit_angsuran->tanggal_jatuh_tempo);
+        // Mark the interest installment (Angsuran Bunga) as paid
+        KreditAngsuran::where('id', $id)->update(['status_bunga' => 'Lunas']);
+
+        // Add notification or any additional logic
+        Notification::make()->title('Angsuran Bunga berhasil dilunasi!')->success()->send();
+    }
+
+
 
     public function submitSimpananPokok(){
         $data = $this->formSimpananPokok->getState();
@@ -262,7 +408,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = Kredit::where('id',$id)->first();
 
         $controller = new Controller();
-        // $controller->jurnal_umum('Bayar Simpanan Pokok',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Pinjam', $simpok->nominal_pinjaman,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -368,7 +514,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
     public function goUbahItemSimpananSukarela($id){
         $this->simsem_id = $id;
-        $simpok = SimpananSukarelaAnggota::where('id',$id)->first();
+        $simpok = SimpananNonModalData::where('id',$id)->first();
 
         $this->formSimpananSukarela->fill($simpok->toArray());
 
@@ -378,7 +524,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = SimpananSukarelaAnggota::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Bayar Setoran Sukarela',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Bayar Simpanan Non Modal',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -410,8 +556,9 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     {
         $data['simpanan_pokok'] = SimpananPokokAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
         $data['simpanan_wajib'] = SimpananWajibAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
-        $data['simpanan_sukarela'] = SimpananSukarelaAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
+        $data['simpanan_sukarela'] = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->where('menu_id',$this->menu_id)->get();
         $data['kredit'] = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->get();
+
         return view('livewire.anggota-koperasi-detail',$data);
     }
 }

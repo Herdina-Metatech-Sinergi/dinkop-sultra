@@ -6,6 +6,7 @@ use App\Filament\Resources\AnggotaKoperasiResource\Pages;
 use App\Filament\Resources\AnggotaKoperasiResource\RelationManagers;
 use App\Filament\Resources\AnggotaKoperasiResource\Widgets\AnggotaKoperasiDetailWidget;
 use App\Models\AnggotaKoperasi;
+use App\Models\IdentitasKoperasi;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -30,7 +31,17 @@ class AnggotaKoperasiResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('identitas_koperasi_id')->relationship('identitas_koperasi', 'nama_koperasi')->required()->searchable(),
+                Select::make('identitas_koperasi_id')->options(function () {
+                    // Cek apakah user memiliki role "Admin"
+                    if (auth()->user()->hasRole('Admin')) {
+                        // Jika user adalah Admin, tampilkan semua opsi
+                        return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                    } else {
+                        // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                        return IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                ->pluck('nama_koperasi', 'id');
+                    }
+                })->required()->searchable()->label('Koperasi'),
                 Forms\Components\TextInput::make('no_anggota')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('ktp')

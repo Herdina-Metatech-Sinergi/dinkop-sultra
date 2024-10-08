@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\IdentitasKoperasi;
 use App\Models\JurnalUmum as ModelsJurnalUmum;
 use App\Models\MasterCoa;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -75,9 +76,17 @@ class JurnalUmum extends Component implements HasForms, HasTable
                     TextInput::make('filters.tgl_akhir')->lazy()
                         ->required()
                         ->type('date'),
-                    Select::make('filters.identitas_koperasi_id')->options(IdentitasKoperasi::when(!auth()->user()->hasRole('Admin'), function($q){
-                        // $q->where('id',auth()->user()->);
-                    })->get()->pluck('nama_koperasi','id'))->searchable()->required()
+                    Select::make('filters.identitas_koperasi_id')->options(function () {
+                        // Cek apakah user memiliki role "Admin"
+                        if (auth()->user()->hasRole('Admin')) {
+                            // Jika user adalah Admin, tampilkan semua opsi
+                            return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                        } else {
+                            // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                            return IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                    ->pluck('nama_koperasi', 'id');
+                        }
+                    })->searchable()->required()
             ])])->model(ModelsJurnalUmum::class);
     }
 
@@ -128,7 +137,27 @@ class JurnalUmum extends Component implements HasForms, HasTable
     {
         return $form
             ->schema([
-                Grid::make(3)->schema([Select::make('identitas_koperasi_id')->relationship('identitas_koperasi', 'nama_koperasi')->required()->searchable(), Select::make('user_id')->label('Pengguna')->relationship('user', 'name')->required(), DatePicker::make('tanggal')->label('Tanggal')->required()]),
+                Grid::make(3)->schema([Select::make('identitas_koperasi_id')->options(function () {
+                    // Cek apakah user memiliki role "Admin"
+                    if (auth()->user()->hasRole('Admin')) {
+                        // Jika user adalah Admin, tampilkan semua opsi
+                        return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                    } else {
+                        // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                        return IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                ->pluck('nama_koperasi', 'id');
+                    }
+                })->required()->searchable(), Select::make('user_id')->label('Pengguna')->options(function () {
+                    // Cek apakah user memiliki role "Admin"
+                    if (auth()->user()->hasRole('Admin')) {
+                        // Jika user adalah Admin, tampilkan semua opsi
+                        return User::get()->pluck('name', 'id');
+                    } else {
+                        // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                        return User::where('id', auth()->user()->id)
+                                                ->pluck('name', 'id');
+                    }
+                })->required()->searchable(), DatePicker::make('tanggal')->label('Tanggal')->required()]),
 
                 Grid::make(1)->schema([
                     Repeater::make('entries')

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('deskripsi')->nullable();
             $table->string('akun')->nullable();
             $table->string('d_k')->nullable();
-            $table->float('nominal')->nullable();
+            $table->double('nominal')->nullable();
             $table->unsignedBigInteger('identitas_koperasi_id')->nullable(); // kolom foreign key
             $table->foreign('identitas_koperasi_id')->references('id')->on('identitas_koperasis');
             $table->unsignedBigInteger('user_id'); // kolom foreign key

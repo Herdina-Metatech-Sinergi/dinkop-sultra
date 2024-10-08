@@ -59,5 +59,16 @@ class User extends Authenticatable implements HasAvatar
         return true;
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($item) {
+            if (!$item->user_id_create) {
+                $item->user_id_create = auth()->id() ?? null;
+            }
+        });
+
+    }
 
 }

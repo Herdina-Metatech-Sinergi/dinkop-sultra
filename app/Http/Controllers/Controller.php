@@ -33,7 +33,7 @@ class Controller extends BaseController
         $date = $tanggal;
         $anggota = AnggotaKoperasi::where('id',$anggota_id)->first();
 
-        $jurnal =  date('YmdHis', strtotime($date)) . '#' . $anggota->identitas_koperasi_id . '#' . auth()->user()->id.'#'.$anggota->id;
+        $jurnal =  date('YmdHis', strtotime($date)) .'#'.($kon[0]->id??'0'). '#' . $anggota->identitas_koperasi_id . '#' . auth()->user()->id.'#'.$anggota->id;
 
         if ($hapus) {
             # code...
