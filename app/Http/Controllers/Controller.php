@@ -23,7 +23,7 @@ class Controller extends BaseController
 
     }
 
-    public function jurnal_umum($konfigurasi_coa_id, $nominal, $anggota_id,$jurnal_kode = null, $deskripsi= null, $tanggal, $hapus = null)
+    public function jurnal_umum($konfigurasi_coa_id, $nominal, $anggota_id,$jurnal_kode = null, $deskripsi= null, $tanggal, $hapus = null,$identitas_koperasi_id = null)
     {
         //menambah data ke jurnal umum
         $kon = KonfigurasiCOA::where('nama', $konfigurasi_coa_id)->get();
@@ -33,13 +33,20 @@ class Controller extends BaseController
         $date = $tanggal;
         $anggota = AnggotaKoperasi::where('id',$anggota_id)->first();
 
-        $jurnal =  date('YmdHis', strtotime($date)) .'#'.($kon[0]->id??'0'). '#' . $anggota->identitas_koperasi_id . '#' . auth()->user()->id.'#'.$anggota->id;
+        if ($identitas_koperasi_id == null) {
+            # code...
+            $identitas_koperasi_id =  $anggota->identitas_koperasi_id;
+        }
+
+        $jurnal =  date('YmdHis', strtotime($date)) .'#'.($kon[0]->id??'0'). '#' . $identitas_koperasi_id . '#' . auth()->user()->id.'#'.($anggota->id ?? 0);
 
         if ($hapus) {
             # code...
             ModelsJurnalUmum::where('jurnal',$jurnal)->delete();
             return true;
         }
+
+
         foreach ($kon as $key) {
             $nom = $nominal;
             if ($key->persen) {
@@ -57,7 +64,7 @@ class Controller extends BaseController
                 'nominal' => $nom,
                 'user_id' => auth()->user()->id,
                 'jurnal' => $jurnal_kode ?? $jurnal,
-                'identitas_koperasi_id' => $anggota->identitas_koperasi_id
+                'identitas_koperasi_id' => $identitas_koperasi_id
             ]);
 
         }

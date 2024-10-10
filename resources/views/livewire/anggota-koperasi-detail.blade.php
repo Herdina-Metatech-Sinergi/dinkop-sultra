@@ -282,132 +282,6 @@
                                 </x-tab.tab>
                             </x-tab.tab-container>
 
-                            <!-- Simpanan Non Modal (with Simpanan Sukarela as a sub-tab) -->
-                            {{-- <x-tab.tab-container tab="tabSimpanan" id="tabcon-simpanan-non-modal">
-                                <x-tab.tab tab="tabNonModal" defaultTab="tabcon-simpanan-sukarela">
-                                    <x-slot:navButton>
-                                        <x-tab.nav-button tab="tabNonModal" id="tabcon-simpanan-sukarela">
-                                            Simpanan Sukarela
-                                        </x-tab.nav-button>
-                                    </x-slot:navButton>
-
-                                    <x-slot:tabContainer>
-                                        <!-- Simpanan Sukarela Form and Table -->
-                                        <x-tab.tab-container tab="tabNonModal" id="tabcon-simpanan-sukarela">
-                                            <form wire:submit.prevent="submitSimpananSukarela">
-                                                {{ $this->formSimpananSukarela }}
-                                                <p><br></p>
-                                                <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"
-                                                    wire:click="submitSimpananSukarela()">
-                                                    <x-slot:custom_svg>
-                                                        <x-button.svg.save />
-                                                    </x-slot:custom_svg>
-                                                    Simpan
-                                                </x-button.button>
-                                            </form>
-                                            <x-table-sm.table title="" subtitle="Simpanan Sukarela" customClass='mt-5'>
-
-                                                <x-slot:th>
-                                                    <x-table-sm.table-th>
-                                                        Tanggal
-                                                    </x-table-sm.table-th>
-                                                    <x-table-sm.table-th>
-                                                        Deskripsi
-                                                    </x-table-sm.table-th>
-                                                    <x-table-sm.table-th>
-                                                        Debet
-                                                    </x-table-sm.table-th>
-                                                    <x-table-sm.table-th>
-                                                        Kredit
-                                                    </x-table-sm.table-th>
-                                                    <x-table-sm.table-th>
-                                                        Saldo
-                                                    </x-table-sm.table-th>
-                                                    <x-table-sm.table-th>
-                                                        Aksi
-                                                    </x-table-sm.table-th>
-
-                                                </x-slot:th>
-                                                <x-slot:row>
-                                                    @php
-                                                    $total_simsuk = 0;
-                                                @endphp
-                                                    @forelse ($simpanan_sukarela ?? [] as $data)
-
-                                                        <x-table-sm.table-tr>
-                                                            <x-table-sm.table-td>
-                                                                {{ @$data['tanggal'] }}
-                                                            </x-table-sm.table-td>
-                                                            <x-table-sm.table-td>
-                                                                {{ @$data['deskripsi'] }}
-                                                            </x-table-sm.table-td>
-                                                            <x-table-sm.table-td customClass='text-right'>
-                                                                @if ($data['d_k'] == 'Debet')
-                                                                {{ App\Http\Controllers\Controller::rupiah(@$data['nominal']) }}
-
-                                                                @endif
-                                                            </x-table-sm.table-td>
-
-                                                            <x-table-sm.table-td customClass='text-right'>
-                                                                @if ($data['d_k'] == 'Kredit')
-                                                                {{ App\Http\Controllers\Controller::rupiah(@$data['nominal']) }}
-
-                                                                @endif
-                                                            </x-table-sm.table-td>
-                                                            <x-table-sm.table-td customClass='text-right'>
-                                                                @if ($data['d_k'] == 'Debet')
-                                                                @php
-                                                                    $total_simsuk += $data['nominal'];
-
-                                                                @endphp
-                                                                @endif
-                                                                @if ($data['d_k'] == 'Kredit')
-                                                                @php
-                                                                    $total_simsuk -= $data['nominal'];
-
-                                                                @endphp
-                                                                @endif
-                                                                {{ App\Http\Controllers\Controller::rupiah(@$total_simsuk) }}
-
-                                                            </x-table-sm.table-td>
-
-                                                            <x-table-sm.table-td>
-                                                                <x-button.button-only-edit color="warning"
-                                                                    wire:click="goUbahItemSimpananSukarela({{ $data['id'] }})"
-                                                                    wire:loading.attr="disabled"
-                                                                    wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-edit>
-                                                                <x-button.button-only-delete color="danger"
-                                                                    onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
-                                                                    wire:click="goHapusItemSimpananSukarela({{ $data['id'] }})"
-                                                                    wire:loading.attr="disabled"
-                                                                    wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-delete>
-                                                            </x-table-sm.table-td>
-                                                        </x-table-sm.table-tr>
-                                                    @empty
-                                                        <x-table-sm.table-tr>
-                                                            <x-table-sm.table-td-full-colspan>
-                                                                Data kosong
-                                                            </x-table-sm.table-td-full-colspan>
-                                                        </x-table-sm.table-tr>
-                                                    @endforelse
-
-                                                    <x-table-sm.table-tr>
-                                                        <x-table-sm.table-td colspan='4' customClass='border-0 text-right font-bold'>
-                                                            Total
-                                                        </x-table-sm.table-td>
-                                                        <x-table-sm.table-td colspan='1' customClass='border-0 text-right font-bold'>
-                                                            {{App\Http\Controllers\Controller::rupiah($total_simsuk)}}
-                                                        </x-table-sm.table-td>
-                                                    </x-table-sm.table-tr>
-                                                </x-slot:row>
-                                            </x-table-sm.table>
-                                        </x-tab.tab-container>
-                                    </x-slot:tabContainer>
-                                </x-tab.tab>
-                            </x-tab.tab-container> --}}
-
                             <!-- Simpanan Non Modal Section -->
                             <x-tab.tab-container tab="tabSimpanan" id="tabcon-simpanan-non-modal">
                                 <!-- Input untuk menambahkan menu baru -->
@@ -433,10 +307,21 @@
                                                     <!-- Tampilkan formulir yang dihasilkan sesuai dengan menu -->
                                                     {{ $this->formSimpananSukarela ?? '' }}
                                                     <p><br></p>
-
                                                     <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"  wire:click="submitSimpananNonModal()">
                                                         Simpan
                                                     </x-button.button>
+                                                    <p><br></p>
+
+                                                    <hr>
+                                                    <p><br></p>
+
+                                                    <h3>Hitung Jasa</h3>
+                                                    {{ $this->formSimpananSukarelaJasa ?? '' }}
+                                                    <p><br></p>
+                                                    <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"  wire:click="submitSimpananNonModalJasa()">
+                                                        Simpan
+                                                    </x-button.button>
+
                                                 </form>
 
                                                 <x-table-sm.table title="" subtitle="{{$menu->name}}" customClass='mt-5'>

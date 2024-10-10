@@ -106,13 +106,6 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     // Submit form for each dynamic menu
     public function submitSimpananNonModal()
     {
-        // $data = $this->{'formSimpananSukarela'}->getState();
-        // $data['menu_id'] = $this->menu_id;
-        // $data['anggota_koperasi_id'] = $this->anggota_id;
-
-        // SimpananNonModalData::create($data);
-
-        // Notification::make()->title('Data simpanan berhasil disubmit!')->success()->send();
 
         $data = $this->formSimpananSukarela->getState();
         $data['anggota_koperasi_id'] = $this->anggota_id;
@@ -121,10 +114,17 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         if ($this->simsem_id) {
             # code...
+            unset($data['tanggal']);
+
             $simpok = SimpananNonModalData::where('id',$this->simsem_id)->update($data);
             $simpok = SimpananNonModalData::where('id',$this->simsem_id)->first();
 
         }else{
+            $cek = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->latest()->first();
+            if (@$cek->tanggal > $data['tanggal']) {
+                # code...
+                return Notification::make()->title('Gagal disubmit, tanggal tidak boleh kurang dari transaksi terakhir!')->danger()->send();
+            }
             $simpok = SimpananNonModalData::create($data);
 
         }
@@ -144,6 +144,50 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
+        return Notification::make()->title('Berhasil disubmit!')->success()->send();
+    }
+
+
+    // Submit form for each dynamic menu
+    public function submitSimpananNonModalJasa()
+    {
+
+        $data = $this->formSimpananSukarelaJasa->getState();
+        $data['anggota_koperasi_id'] = $this->anggota_id;
+        $data['menu_id'] = $this->menu_id;
+
+        $data['d_k'] = 'Debet';
+        $data['nominal'] = $data['nominal_jasa'];
+        $data['tanggal'] = date('Y-m-d');
+        $data['deskripsi'] = 'Bunga Tahunan : '.$data['tingkat_bunga'].'%';
+
+        unset($data['tanggal_akhir']);
+        unset($data['saldo_akhir']);
+        unset($data['tingkat_bunga']);
+        unset($data['nominal_jasa']);
+
+        $cek = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->latest()->first();
+        if (@$cek->tanggal > $data['tanggal']) {
+            # code...
+            return Notification::make()->title('Gagal disubmit, tanggal tidak boleh kurang dari transaksi terakhir!')->danger()->send();
+        }
+        $simpok = SimpananNonModalData::create($data);
+
+
+        $controller = new Controller();
+        if ($data['d_k'] == 'Debet') {
+
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+        }
+        $this->simpok_id = null;
+        $this->simwa_id = null;
+        $this->simsem_id = null;
+        $this->formHeader->fill();
+        $this->formSimpananPokok->fill();
+        $this->formSimpananWajib->fill();
+        $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
     }
 
@@ -155,6 +199,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             'formSimpananPokok',
             'formSimpananWajib',
             'formSimpananSukarela',
+            'formSimpananSukarelaJasa',
             'formKredit',
             'formSimpananNonModal'
         ];
@@ -309,6 +354,49 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             ->model(SimpananSukarelaAnggota::class)->statePath('data');
     }
 
+    public function formSimpananSukarelaJasa(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Grid::make(2)->schema([
+                    DatePicker::make('tanggal_akhir')->required()->label('Tanggal Akhir Bulan')->reactive()->afterStateUpdated(function (callable $set, $state, $get) {
+                        // Ambil data input dari form
+                        $tgl_akhir = $get('tanggal_akhir');  // Pinjaman Pokok
+                        $tgl_awal = date('Y-m',strtotime($get('tanggal_akhir'))).'-01';  // Pinjaman Pokok
+
+                        $simsuk = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->where('menu_id',$this->menu_id)->whereBetween('tanggal',[$tgl_awal,$tgl_akhir])->get();
+
+                        $tot = 0;
+                        foreach ($simsuk as $key => $value) {
+                            # code...
+                            if ($value->d_k == 'Debet') {
+                                # code...
+                                $tot += $value->nominal;
+                            }else{
+                                $tot -= $value->nominal;
+
+                            }
+                        }
+                        $set('saldo_akhir', round($tot));
+                    }),
+                    TextInput::make('saldo_akhir')->label('Saldo Akhir')->numeric()->required()->readOnly()->reactive(),
+                    TextInput::make('tingkat_bunga')->label('Tingkat Bunga Tahunan (%)')->numeric()->required()->reactive()->afterStateUpdated(function (callable $set, $state, $get) {
+                        // Ambil data input dari form
+                        $bunga = $get('tingkat_bunga');  // Pinjaman Pokok
+                        $saldo_akhir = $get('saldo_akhir');  // Pinjaman Pokok
+
+                        $hit_bunga = $saldo_akhir * ($bunga/100) * (1/12);
+
+
+                        $set('nominal_jasa', round($hit_bunga) );
+                    }),
+                    TextInput::make('nominal_jasa')->label('Nominal Jasa')->readOnly()->reactive(),
+             ]),
+
+            ])
+            ->model(SimpananSukarelaAnggota::class)->statePath('data');
+    }
+
     public function submitKredit(){
         $data = $this->formKredit->getState();
         $data['anggota_koperasi_id'] = $this->anggota_id;
@@ -357,6 +445,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
         $this->formKredit->fill();
 
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
@@ -396,10 +485,20 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         if ($this->simpok_id) {
             # code...
+
+            // prevent update tanggal
+            unset($data['tanggal']);
+
             $simpok = SimpananPokokAnggota::where('id',$this->simpok_id)->update($data);
             $simpok = SimpananPokokAnggota::where('id',$this->simpok_id)->first();
 
         }else{
+
+            $cek = SimpananPokokAnggota::where('anggota_koperasi_id',$this->anggota_id)->latest()->first();
+            if (@$cek->tanggal > $data['tanggal']) {
+                # code...
+                return Notification::make()->title('Gagal disubmit, tanggal tidak boleh kurang dari transaksi terakhir!')->danger()->send();
+            }
             $simpok = SimpananPokokAnggota::create($data);
 
         }
@@ -421,6 +520,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
 
     }
@@ -481,10 +581,17 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         if ($this->simwa_id) {
             # code...
+            unset($data['tanggal']);
+
             $simpok = SimpananWajibAnggota::where('id',$this->simwa_id)->update($data);
             $simpok = SimpananWajibAnggota::where('id',$this->simwa_id)->first();
 
         }else{
+            $cek = SimpananWajibAnggota::where('anggota_koperasi_id',$this->anggota_id)->latest()->first();
+            if (@$cek->tanggal > $data['tanggal']) {
+                # code...
+                return Notification::make()->title('Gagal disubmit, tanggal tidak boleh kurang dari transaksi terakhir!')->danger()->send();
+            }
             $simpok = SimpananWajibAnggota::create($data);
 
         }
@@ -504,6 +611,8 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
+
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
 
     }
@@ -557,6 +666,8 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formSimpananPokok->fill();
         $this->formSimpananWajib->fill();
         $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
+
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
 
     }
