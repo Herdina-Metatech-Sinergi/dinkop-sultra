@@ -96,7 +96,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             Grid::make(4)->schema([
                 TextInput::make('nominal')->numeric()->required(),
                 DatePicker::make('tanggal')->required(),
-                Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Debet', 'Kredit' => 'Kredit'])->required(),
+                Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Stor', 'Kredit' => 'Tarik'])->required(),
                 TextInput::make('deskripsi'),
             ]),
         ])->model(SimpananNonModalData::class)
@@ -197,7 +197,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     {
         return $form
             ->schema([
-                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Debet', 'Kredit' => 'Kredit'])->required(), TextInput::make('deskripsi'), ]),
+                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Stor', 'Kredit' => 'Tarik'])->required(), TextInput::make('deskripsi'), ]),
 
             ])
             ->model(SimpananPokokAnggota::class)->statePath('data');
@@ -208,30 +208,80 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         return $form
             ->schema([
                 Grid::make(2)->schema([
-                    TextInput::make('kredit')->required()->label('Jenis Kredit'),
+                    TextInput::make('kredit')->readOnly()->label('Jenis Kredit')->default('Flat'),
                     TextInput::make('keterangan')->required()->label('Keterangan'),
                 ]),
                 Grid::make(4)->schema([
                     // Principal Loan Amount (Pinjaman Pokok)
-                    TextInput::make('nominal_pinjaman')->numeric()->required()->label('Nominal Pinjaman Pokok'),
+                    TextInput::make('nominal_pinjaman')->numeric()->required()->label('Nominal Pinjaman Pokok')
+                    ->afterStateUpdated(function (callable $set, $state, $get) {
+                        // Ambil data input dari form
+                        $principal = $get('nominal_pinjaman');  // Pinjaman Pokok
+                        $interest_rate = $get('interest_rate'); // Suku Bunga (%)
+                        $num_installments = $get('num_installments'); // Jangka Waktu (bulan)
+
+                        // Hitung angsuran per bulan
+                        if ($principal && $interest_rate && $num_installments) {
+                            $monthly_interest = $interest_rate / 100 * $principal;
+                            $total_installment = ($principal / $num_installments) + $monthly_interest;
+
+                            // Simpan hasilnya ke angsuran_bulan
+                            $set('angsuran_bulan', round($total_installment, 2));
+                        }
+                    })
+                    ->reactive(), // Reactive to trigger recalculation
 
                     // Interest rate (Suku Bunga)
                     TextInput::make('interest_rate')
                         ->numeric()
                         ->required()
+                        ->reactive() // Reactive to trigger recalculation
+                        ->afterStateUpdated(function (callable $set, $state, $get) {
+                            // Ambil data input dari form
+                            $principal = $get('nominal_pinjaman');  // Pinjaman Pokok
+                            $interest_rate = $get('interest_rate'); // Suku Bunga (%)
+                            $num_installments = $get('num_installments'); // Jangka Waktu (bulan)
+
+                            // Hitung angsuran per bulan
+                            if ($principal && $interest_rate && $num_installments) {
+                                $monthly_interest = $interest_rate / 100 * $principal;
+                                $total_installment = ($principal / $num_installments) + $monthly_interest;
+
+                                // Simpan hasilnya ke angsuran_bulan
+                                $set('angsuran_bulan', round($total_installment, 2));
+                            }
+                        })
                         ->label('Suku Bunga per bulan (%)'),
 
                     // Number of Installments (Jangka Waktu)
                     TextInput::make('num_installments')
                         ->numeric()
                         ->required()
+                        ->reactive() // Reactive to trigger recalculation
+                        ->afterStateUpdated(function (callable $set, $state, $get) {
+                            // Ambil data input dari form
+                            $principal = $get('nominal_pinjaman');  // Pinjaman Pokok
+                            $interest_rate = $get('interest_rate'); // Suku Bunga (%)
+                            $num_installments = $get('num_installments'); // Jangka Waktu (bulan)
+
+                            // Hitung angsuran per bulan
+                            if ($principal && $interest_rate && $num_installments) {
+                                $monthly_interest = $interest_rate / 100 * $principal;
+                                $total_installment = ($principal / $num_installments) + $monthly_interest;
+
+                                // Simpan hasilnya ke angsuran_bulan
+                                $set('angsuran_bulan', round($total_installment, 2));
+                            }
+                        })
                         ->label('Jangka Waktu (bulan)'),
                         // Monthly Installment (Angsuran/Bulan)
                     TextInput::make('angsuran_bulan')
                         ->numeric()
                         ->disabled()  // This field is calculated, so it's disabled for manual input
                         ->label('Angsuran/Bulan')
-                        ->helperText('Automatically calculated'),
+                        ->helperText('Kalkulasi Otomatis')
+                        ->reactive(),
+
                 ]),
             ])
             ->model(Kredit::class)
@@ -239,12 +289,11 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     }
 
 
-
     public function formSimpananWajib(Form $form): Form
     {
         return $form
             ->schema([
-                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Debet', 'Kredit' => 'Kredit'])->required(), TextInput::make('deskripsi'), ]),
+                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Stor', 'Kredit' => 'Tarik'])->required(), TextInput::make('deskripsi'), ]),
 
             ])
             ->model(SimpananWajibAnggota::class)->statePath('data');
@@ -254,7 +303,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     {
         return $form
             ->schema([
-                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Debet', 'Kredit' => 'Kredit'])->required(), TextInput::make('deskripsi'), ]),
+                Grid::make(4)->schema([TextInput::make('nominal')->numeric()->required(), DatePicker::make('tanggal')->required(), Select::make('d_k')->label('Debet/Kredit')->options(['Debet' => 'Stor', 'Kredit' => 'Tarik'])->required(), TextInput::make('deskripsi'), ]),
 
             ])
             ->model(SimpananSukarelaAnggota::class)->statePath('data');
