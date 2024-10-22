@@ -6,6 +6,7 @@ use App\Filament\Resources\TransaksiUmumResource\Pages;
 use App\Filament\Resources\TransaksiUmumResource\RelationManagers;
 use App\Models\IdentitasKoperasi;
 use App\Models\KonfigurasiCOA;
+use App\Models\MasterCoa;
 use App\Models\TransaksiUmum;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -30,27 +31,31 @@ class TransaksiUmumResource extends Resource
             ->schema([
                 Select::make('identitas_koperasi_id')->options(function () {
                     // Cek apakah user memiliki role "Admin"
-                    if (auth()->user()->hasRole('Admin')) {
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
                         // Jika user adalah Admin, tampilkan semua opsi
-                        return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                        $options = IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
                     } else {
                         // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
-                        return IdentitasKoperasi::where('user_id', auth()->user()->id)
-                                                ->pluck('nama_koperasi', 'id');
+                        $options = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                    ->pluck('nama_koperasi', 'id');
                     }
-                })->required()->searchable()->label('Koperasi'),
-                Select::make('konfigurasi_coa')->options(function () {
-                    // Cek apakah user memiliki role "Admin"
 
-                        // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
-                    $konf_coa = KonfigurasiCOA::get()->groupBy('nama');
-                    $kon = [];
-                    foreach ($konf_coa as $key => $value) {
-                        # code...
-                        $kon [$key] = $key;
+                    return $options;
+                })
+                ->default(function () {
+
+                    // Dapatkan nilai ID pertama dari query berdasarkan role user
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
+                        $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+                    } else {
+                        $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                        ->pluck('id')
+                                                        ->first();
                     }
-                    return $kon;
-                })->required()->searchable()->label('Transaksi'),
+
+                    return $firstOption;
+                })->searchable()->required()->label('Identitas Koperasi')->required()->searchable()->label('Koperasi'),
+                Select::make('konfigurasi_coa')->options(MasterCoa::whereRaw('LENGTH(kode_coa) >= 4')->where('saldo_normal','Debet')->where('kode_coa','like','5%')->get()->pluck('title', 'kode_coa'))->required()->searchable()->label('Transaksi'),
                 Forms\Components\DatePicker::make('tanggal')
                     ->required(),
                 Forms\Components\TextInput::make('nominal')

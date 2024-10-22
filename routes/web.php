@@ -33,4 +33,5 @@ Route::get('admin/cetak/laporan-akun', [CetakController::class,'laporanAkun']);
 Route::get('admin/cetak/laporan-akun/coa/{coa}/cetak', [CetakController::class,'laporanAkunCoa']);
 
 Route::get('admin/cetak/laporan-laba-rugi', [CetakController::class,'laporanLabaRugi']);
+Route::get('admin/cetak/laporan-posisi-keuangan', [CetakController::class,'laporanPosisiKeuangan']);
 

@@ -25,6 +25,18 @@ class LaporanLabaRugi extends Component implements HasForms
         'identitas_koperasi_id' => null,
     ];
 
+    public function mount(){
+        if (auth()->user()->hasRole('Admin Dinkop')) {
+            $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+        } else {
+            $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                            ->pluck('id')
+                                            ->first();
+        }
+
+        $this->filters['identitas_koperasi_id']  = $firstOption;
+    }
+
     public function getFilterFormSchema(Form $form): Form
     {
         return $form
@@ -37,15 +49,30 @@ class LaporanLabaRugi extends Component implements HasForms
                         ->type('date'),
                     Select::make('filters.identitas_koperasi_id')->options(function () {
                         // Cek apakah user memiliki role "Admin"
-                        if (auth()->user()->hasRole('Admin')) {
+                        if (auth()->user()->hasRole('Admin Dinkop')) {
                             // Jika user adalah Admin, tampilkan semua opsi
-                            return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                            $options = IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
                         } else {
                             // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
-                            return IdentitasKoperasi::where('user_id', auth()->user()->id)
-                                                    ->pluck('nama_koperasi', 'id');
+                            $options = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                        ->pluck('nama_koperasi', 'id');
                         }
-                    })->searchable()->required()
+
+                        return $options;
+                    })
+                    ->default(function () {
+
+                        // Dapatkan nilai ID pertama dari query berdasarkan role user
+                        if (auth()->user()->hasRole('Admin Dinkop')) {
+                            $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+                        } else {
+                            $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                            ->pluck('id')
+                                                            ->first();
+                        }
+
+                        return $firstOption;
+                    })->searchable()->required()->label('Identitas Koperasi')
             ])])->model(JurnalUmum::class);
     }
 

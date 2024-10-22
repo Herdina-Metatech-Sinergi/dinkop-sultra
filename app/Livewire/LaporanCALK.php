@@ -10,11 +10,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
-class LaporanPosisiKeuangan extends Component implements HasForms
+class LaporanCALK extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -109,7 +107,7 @@ class LaporanPosisiKeuangan extends Component implements HasForms
             $tgl_akhir = Carbon::parse($this->filters['tgl_akhir']);
 
 
-            $_url = '/admin/cetak/laporan-posisi-keuangan?tgl_awal=' . $tgl_awal->toDateString() . '&tgl_akhir=' . $tgl_akhir->toDateString() . '&identitas_koperasi_id=' . $this->filters['identitas_koperasi_id'];
+            $_url = '/admin/cetak/laporan-akun?tgl_awal=' . $tgl_awal->toDateString() . '&tgl_akhir=' . $tgl_akhir->toDateString() . '&identitas_koperasi_id=' . $this->filters['identitas_koperasi_id'];
             return redirect($_url);
             // $this->dispatch('download-export', $_url);
         } catch (\Throwable $th) {
@@ -119,6 +117,6 @@ class LaporanPosisiKeuangan extends Component implements HasForms
 
     public function render()
     {
-        return view('livewire.laporan-posisi-keuangan');
+        return view('livewire.laporan-c-a-l-k');
     }
 }

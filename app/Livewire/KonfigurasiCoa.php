@@ -13,6 +13,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -86,7 +88,13 @@ class KonfigurasiCoa extends Component implements HasForms, HasTable
                             // ->relationship('master_coa','title')
                             ->options(MasterCoa::all()->pluck('title', 'kode_coa'))
 
-                            ->required(),
+                            ->required()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                $akun_id = $state;
+
+                                $msc = MasterCoa::where('kode_coa',$akun_id)->first();
+                                $set('dk',strtolower($msc->saldo_normal)) ;
+                            })->reactive(),
 
 
 
@@ -96,7 +104,7 @@ class KonfigurasiCoa extends Component implements HasForms, HasTable
                                 'debet' => 'Debet',
                                 'kredit' => 'Kredit',
                             ])
-                            ->required(),
+                            ->required()->reactive(),
 
                         TextInput::make('nominal')
                             ->label('Nominal (Untuk simulasi)')

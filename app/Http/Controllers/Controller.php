@@ -30,7 +30,14 @@ class Controller extends BaseController
 
         $car = Carbon::now()->isoFormat('YYYYMMDD');
 
-        $date = $tanggal;
+        if ($tanggal) {
+            # code...
+            $date = $tanggal;
+
+        }else{
+            $date = date('Y-m-d H:i:s');
+
+        }
         $anggota = AnggotaKoperasi::where('id',$anggota_id)->first();
 
         if ($identitas_koperasi_id == null) {

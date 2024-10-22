@@ -162,9 +162,9 @@
 
                 </tr>
 
-                <tr style="background-color: green; color: white">
+                <tr style="background-color: gray; color: white">
                     <td style="text-align: left;border-right: 1px solid black; ">
-                        <b>LABA KOTOR</b>
+                        <b>SHU KOTOR</b>
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
@@ -224,9 +224,9 @@
 
                 </tr>
 
-                <tr style="background-color: green; color: white">
+                <tr style="background-color: gray; color: white">
                     <td style="text-align: left;border-right: 1px solid black; ">
-                        <b>LABA BERSIH</b>
+                        <b>SHU BERSIH</b>
                     </td>
 
                     <td style="text-align: right;border-right: 1px solid black;">
@@ -239,6 +239,19 @@
                 </tr>
             </tbody>
 
+        </table>
+
+        <p><br><br></p>
+        <table class='table borderless'>
+            <tr>
+
+                <td style="text-align: right">
+                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['kabupaten_kota']}}, {{date('d-m-Y')}}</p>
+                    <p style="margin-bottom: 0px; font-size: 14px;">Pengurus</p>
+                    <p><br><br><br></p>
+                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['nama_pengurus']}}</p>
+                </td>
+            </tr>
         </table>
     </div>
 

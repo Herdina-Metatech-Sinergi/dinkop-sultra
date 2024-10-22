@@ -11,4 +11,7 @@ class SimpananWajibAnggota extends Model
 
     protected $guarded = [];
 
+    public function anggota_koperasi(){
+        return $this->belongsTo(AnggotaKoperasi::class);
+    }
 }

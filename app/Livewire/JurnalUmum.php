@@ -16,6 +16,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -47,6 +49,18 @@ class JurnalUmum extends Component implements HasForms, HasTable
     {
         $this->createForm->fill();
         $this->entries = [['id' => null, 'akun' => null, 'deskripsi' => '', 'dk' => null, 'nominal' => '']];
+
+        if (auth()->user()->hasRole('Admin Dinkop')) {
+            $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+        } else {
+            $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                            ->pluck('id')
+                                            ->first();
+        }
+
+        $this->filters['identitas_koperasi_id']  = $firstOption;
+        $this->filters['tgl_awal']  = date('Y-m').'-01';
+        $this->filters['tgl_akhir']  = date('Y-m-d');
     }
 
     public function updated($field)
@@ -70,23 +84,39 @@ class JurnalUmum extends Component implements HasForms, HasTable
     {
         return $form
             ->schema([Grid::make(3)->schema([
+                Select::make('filters.identitas_koperasi_id')->options(function () {
+                    // Cek apakah user memiliki role "Admin"
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
+                        // Jika user adalah Admin, tampilkan semua opsi
+                        $options = IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                    } else {
+                        // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
+                        $options = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                    ->pluck('nama_koperasi', 'id');
+                    }
+
+                    return $options;
+                })
+                ->default(function () {
+
+                    // Dapatkan nilai ID pertama dari query berdasarkan role user
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
+                        $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+                    } else {
+                        $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                        ->pluck('id')
+                                                        ->first();
+                    }
+
+                    return $firstOption;
+                })->searchable()->required()->label('Identitas Koperasi'),
                     TextInput::make('filters.tgl_awal')->lazy()
                         ->required()
                         ->type('date'),
                     TextInput::make('filters.tgl_akhir')->lazy()
                         ->required()
                         ->type('date'),
-                    Select::make('filters.identitas_koperasi_id')->options(function () {
-                        // Cek apakah user memiliki role "Admin"
-                        if (auth()->user()->hasRole('Admin')) {
-                            // Jika user adalah Admin, tampilkan semua opsi
-                            return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
-                        } else {
-                            // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
-                            return IdentitasKoperasi::where('user_id', auth()->user()->id)
-                                                    ->pluck('nama_koperasi', 'id');
-                        }
-                    })->searchable()->required()
+
             ])])->model(ModelsJurnalUmum::class);
     }
 
@@ -139,15 +169,30 @@ class JurnalUmum extends Component implements HasForms, HasTable
             ->schema([
                 Grid::make(3)->schema([Select::make('identitas_koperasi_id')->options(function () {
                     // Cek apakah user memiliki role "Admin"
-                    if (auth()->user()->hasRole('Admin')) {
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
                         // Jika user adalah Admin, tampilkan semua opsi
-                        return IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
+                        $options = IdentitasKoperasi::get()->pluck('nama_koperasi', 'id');
                     } else {
                         // Jika bukan Admin, tampilkan opsi yang sesuai dengan kondisi tertentu
-                        return IdentitasKoperasi::where('user_id', auth()->user()->id)
-                                                ->pluck('nama_koperasi', 'id');
+                        $options = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                    ->pluck('nama_koperasi', 'id');
                     }
-                })->required()->searchable(), Select::make('user_id')->label('Pengguna')->options(function () {
+
+                    return $options;
+                })
+                ->default(function () {
+
+                    // Dapatkan nilai ID pertama dari query berdasarkan role user
+                    if (auth()->user()->hasRole('Admin Dinkop')) {
+                        $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
+                    } else {
+                        $firstOption = IdentitasKoperasi::where('user_id', auth()->user()->id)
+                                                        ->pluck('id')
+                                                        ->first();
+                    }
+
+                    return $firstOption;
+                })->searchable()->required()->label('Identitas Koperasi'), Select::make('user_id')->label('Pengguna')->options(function () {
                     // Cek apakah user memiliki role "Admin"
                     if (auth()->user()->hasRole('Admin')) {
                         // Jika user adalah Admin, tampilkan semua opsi
@@ -157,7 +202,7 @@ class JurnalUmum extends Component implements HasForms, HasTable
                         return User::where('id', auth()->user()->id)
                                                 ->pluck('name', 'id');
                     }
-                })->required()->searchable(), DatePicker::make('tanggal')->label('Tanggal')->required()]),
+                })->default(auth()->user()->id)->required()->searchable(), DatePicker::make('tanggal')->label('Tanggal')->required()]),
 
                 Grid::make(1)->schema([
                     Repeater::make('entries')
@@ -169,8 +214,14 @@ class JurnalUmum extends Component implements HasForms, HasTable
                                 ->label('Pilih Akun')
                                 ->searchable()
                                 // ->relationship('master_coa','title')
-                                ->options(MasterCoa::all()->pluck('title', 'kode_coa'))
-                                ->required(),
+                                ->options(MasterCoa::whereRaw('LENGTH(kode_coa) >= 4')->get()->pluck('title', 'kode_coa'))
+                                ->required()
+                                ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                    $akun_id = $state;
+
+                                    $msc = MasterCoa::where('kode_coa',$akun_id)->first();
+                                    $set('dk',strtolower($msc->saldo_normal)) ;
+                                })->reactive(),
 
                             TextInput::make('deskripsi')->label('Deskripsi')->required(),
 
@@ -180,7 +231,7 @@ class JurnalUmum extends Component implements HasForms, HasTable
                                     'debet' => 'Debet',
                                     'kredit' => 'Kredit',
                                 ])
-                                ->required(),
+                                ->required()->reactive(),
 
                             TextInput::make('nominal')->label('Nominal')->numeric()->required(),
                         ])

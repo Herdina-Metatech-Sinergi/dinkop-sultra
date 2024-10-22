@@ -11,4 +11,7 @@ class KreditAngsuran extends Model
 
     protected $guarded = [];
 
+    public function kredit(){
+        return $this->belongsTo(Kredit::class);
+    }
 }

@@ -92,6 +92,6 @@ class MasterCoaTreeWidget extends BaseWidget
         }
         $kode_coa = $record->kode_coa;
         $title = $record->{(method_exists($record, 'determineTitleColumnName') ? $record->determineTitleColumnName() : 'title')};
-        return "[{$kode_coa}] {$title}";
+        return "[{$kode_coa}] {$title} - {$record->saldo_normal}";
     }
 }

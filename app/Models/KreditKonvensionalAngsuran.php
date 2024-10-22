@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SimpananPokokAnggota extends Model
+class KreditKonvensionalAngsuran extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 
-    public function anggota_koperasi(){
-        return $this->belongsTo(AnggotaKoperasi::class);
+
+    public function kredit_konvensional(){
+        return $this->belongsTo(KreditKonvensional::class);
     }
 }

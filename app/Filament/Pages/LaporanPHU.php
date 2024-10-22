@@ -13,5 +13,7 @@ class LaporanPHU extends Page
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan PHU';
 
+    protected static ?int $navigationSort = 3;
+
 
 }

@@ -21,7 +21,7 @@ class IdentitasKoperasiPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['Admin Dinkop']);
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class IdentitasKoperasiPolicy
     public function view(User $user, IdentitasKoperasi $modal): bool
     {
 
-        return $user->hasRole(['Admin Dinkop']);
+        return true;
     }
 
     /**
@@ -48,7 +48,7 @@ class IdentitasKoperasiPolicy
     public function update(User $user, IdentitasKoperasi $modal): bool
     {
 
-        return $user->hasRole(['Admin Dinkop']);
+        return true;
     }
 
     /**
