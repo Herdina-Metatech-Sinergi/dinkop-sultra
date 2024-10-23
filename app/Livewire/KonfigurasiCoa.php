@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\KonfigurasiCoa as ModelsKonfigurasiCoa;
+use App\Models\KonfigurasiCOA as ModelsKonfigurasiCoa;
 use App\Models\MasterCoa;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
