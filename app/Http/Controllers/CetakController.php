@@ -449,4 +449,166 @@ class CetakController extends Controller
         // dd($data);
         return view('cetak.laporan-posisi-keuangan',$data);
     }
+
+    public function laporanCalk(Request $request){
+        ini_set('memory_limit', '-1');
+
+        if (@$request->tgl_awal == null || @$request->tgl_awal == null || @$request->identitas_koperasi_id == null) {
+            # code...
+            dd('hayo ngapain');
+        }
+
+
+
+
+        $identitas = IdentitasKoperasi::where('id',$request->identitas_koperasi_id)->first();
+
+
+        $tanggal_awal = $request->tgl_awal;
+        $tanggal_akhir = $request->tgl_akhir;
+
+        $tanggal_awal2 = date('Y',strtotime($request->tgl_awal)).'-01-01';
+        $tanggal_akhir2 = $request->tgl_akhir;
+
+        $laporan_shu = [];
+        // kode 4
+
+        // ambil dari riwayat coa
+        // aktiva
+        $coa_aktivas = MasterCoa::with('children')->where('kode_coa','1')->first();
+
+        foreach ($coa_aktivas->children as $key => $value) {
+            # code...
+            foreach ($value->children as $key2 => $coa) {
+                # code...
+                $jurnal_umum_debet = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','debet')->get()->sum('nominal');
+                $jurnal_umum_kredit = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','kredit')->get()->sum('nominal');
+
+                $nom_coa = 0;
+
+                $laporan_shu [] = [
+                    'coa' => str_replace(" ",'_',strtolower($value->title)),
+                    'data' => $coa->toArray(),
+                    'nominal' => abs($nom_coa + round($jurnal_umum_debet - $jurnal_umum_kredit,2))
+                ];
+            }
+        }
+
+        // hutang lancar
+            # code...
+        $coa_aktivas = MasterCoa::with('children')->where('kode_coa','like','21%')->get();
+
+        foreach ($coa_aktivas as $key2 => $coa) {
+            # code...
+            $jurnal_umum_debet = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','debet')->get()->sum('nominal');
+            $jurnal_umum_kredit = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','kredit')->get()->sum('nominal');
+
+            $nom_coa = 0;
+
+            $laporan_shu [] = [
+                'coa' => 'hutang_lancar',
+                'data' => $coa->toArray(),
+                'nominal' => abs($nom_coa + round($jurnal_umum_debet - $jurnal_umum_kredit,2))
+            ];
+        }
+
+        $coa_aktivas = MasterCoa::with('children')->where('kode_coa','like','22%')->get();
+
+        foreach ($coa_aktivas as $key2 => $coa) {
+            # code...
+            $jurnal_umum_debet = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','debet')->get()->sum('nominal');
+            $jurnal_umum_kredit = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','kredit')->get()->sum('nominal');
+
+            $nom_coa = 0;
+
+            $laporan_shu [] = [
+                'coa' => 'hutang_jangka_panjang',
+                'data' => $coa->toArray(),
+                'nominal' => abs($nom_coa + round($jurnal_umum_debet - $jurnal_umum_kredit,2))
+            ];
+        }
+
+        //modal
+        $coa_aktivas = MasterCoa::with('children')->where('kode_coa','like','3%')->get();
+
+        foreach ($coa_aktivas as $key2 => $coa) {
+            # code...
+            $jurnal_umum_debet = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','debet')->get()->sum('nominal');
+            $jurnal_umum_kredit = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$request->identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal2,$tanggal_akhir2])->where('d_k','kredit')->get()->sum('nominal');
+
+            $nom_coa = 0;
+
+            $laporan_shu [] = [
+                'coa' => 'modal',
+                'data' => $coa->toArray(),
+                'nominal' => abs($nom_coa + round($jurnal_umum_debet - $jurnal_umum_kredit,2))
+            ];
+        }
+
+        // shu tahun lalu
+        $tgl_awal2 = $tanggal_awal2;
+        $tgl_akhir2 = (date('Y',strtotime($tanggal_akhir2)) - 1).'-12-31';
+        $perhit = $this->perhitungan_shu($tgl_awal2,$tgl_akhir2,$request->identitas_koperasi_id);
+
+        $perhit = array_values($perhit['tot_lap_shu_rentang']);
+        $tot_lap_shu_ren = $perhit[0] - $perhit[1];
+
+        $laporan_shu [] = [
+            'coa' => 'shu',
+            'data' => $perhit,
+            'nominal' => $tot_lap_shu_ren
+        ];
+
+        // shu saat ini
+        $tgl_awal2 = (date('Y',strtotime($tanggal_akhir2))).'-01-01';
+        $tgl_akhir2 = $tanggal_akhir2;
+        $perhit = $this->perhitungan_shu($tgl_awal2,$tgl_akhir2,$request->identitas_koperasi_id);
+
+        $perhit = array_values($perhit['tot_lap_shu_rentang']);
+        $tot_lap_shu_ren = $perhit[0] - $perhit[1];
+
+        $laporan_shu [] = [
+            'coa' => 'shu',
+            'data' => $perhit,
+            'nominal' => $tot_lap_shu_ren
+        ];
+
+        $laporan_shu_new  = [];
+        foreach ($laporan_shu as $key => $value) {
+            # code...
+            $laporan_shu_new [$value['coa']][] = $value;
+        }
+
+        $tot_lap_shu = [];
+        $tot_lap_shu['aset_lancar'] = 0;
+        $tot_lap_shu['aset_tidak_lancar'] = 0;
+        $tot_lap_shu['aset_tetap'] = 0;
+        $tot_lap_shu['aset_lainnya'] = 0;
+        $tot_lap_shu['hutang_lancar'] = 0;
+        $tot_lap_shu['hutang_jangka_panjang'] = 0;
+        $tot_lap_shu['modal'] = 0;
+        $tot_lap_shu['shu'] = 0;
+
+        foreach ($laporan_shu as $key => $value) {
+            # code...
+            $tot_lap_shu [$value['coa']] += $value['nominal'];
+        }
+
+        // $final
+
+        $final_total = [];
+        $final_total['aset'] = $tot_lap_shu['aset_lancar'] + $tot_lap_shu['aset_tidak_lancar'] + $tot_lap_shu['aset_tetap'] + $tot_lap_shu['aset_lainnya'];
+        $final_total['hutang_dan_modal'] = $tot_lap_shu['hutang_lancar'] + $tot_lap_shu['hutang_jangka_panjang'] + $tot_lap_shu['modal'] + $tot_lap_shu['shu'] ;
+        // $data['meta'] = array('status' => true, 'message' => 'Success');
+        $data['data'] = array('final_total' => $final_total,'laporan_shu' => $laporan_shu_new,'total_laporan_shu' => $tot_lap_shu);
+        $data['akuntansi'] = $data['data'];
+
+        $data['identitas'] = $identitas;
+        $data['calk'] = session()->get('calk');
+
+        $data['tgl_awal'] = $request->tgl_awal;
+        $data['tgl_akhir'] = $request->tgl_akhir;
+
+        return view('cetak.laporan-calk',$data);
+    }
 }
