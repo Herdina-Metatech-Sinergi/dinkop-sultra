@@ -247,6 +247,29 @@
                     </table>
                 </td>
 
+
+
+            </tr>
+
+            <tr>
+                <td style="border: 1px solid; vertical-align: 0; width: 50%">
+                    <table class="table">
+
+                        <tr>
+                            <td>
+                                <b>T O T A L</b>
+                            </td>
+                            <td style="text-align: right; font-weight: bold">
+                                {{ App\Http\Controllers\Controller::rupiah(@$akuntansi['final_total']['aset']) }}
+
+                            </td>
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
                 <td style="border: 1px solid; vertical-align: 0; width: 50%">
                     <table class="table">
                         <tr>
@@ -403,7 +426,7 @@
                         @endphp
                         @foreach ($akuntansi['laporan_shu']['modal'] ?? [] as $key => $item)
                             @if ($item['nominal'] != 0)
-                            @if (str_contains(@$item['data']['title'],'SHU'))
+                            @if (!str_contains(@$item['data']['title'],'SHU'))
 
                             <tr>
                                 <td>
@@ -511,28 +534,10 @@
                     </table>
                 </td>
 
+
             </tr>
-        </table>
-
-
-        <table class="table" style="border: 1px solid black;padding-top: 0px;">
 
             <tr>
-                <td style="border: 1px solid; vertical-align: 0; width: 50%">
-                    <table class="table">
-
-                        <tr>
-                            <td>
-                                <b>T O T A L</b>
-                            </td>
-                            <td style="text-align: right; font-weight: bold">
-                                {{ App\Http\Controllers\Controller::rupiah(@$akuntansi['final_total']['aset']) }}
-
-                            </td>
-
-                        </tr>
-                    </table>
-                </td>
                 <td style="border: 1px solid; vertical-align: 0; width: 50%">
                     <table class="table">
 
@@ -549,9 +554,9 @@
                         </tr>
                     </table>
                 </td>
-
             </tr>
         </table>
+
         <p><br><br></p>
         <table class='table borderless'>
             <tr>

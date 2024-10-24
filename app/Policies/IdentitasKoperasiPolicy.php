@@ -30,7 +30,7 @@ class IdentitasKoperasiPolicy
     public function view(User $user, IdentitasKoperasi $modal): bool
     {
 
-        return true;
+        return $user->hasRole(['Admin Dinkop']);
     }
 
     /**

@@ -55,7 +55,14 @@ class TransaksiUmumResource extends Resource
 
                     return $firstOption;
                 })->searchable()->required()->label('Identitas Koperasi')->required()->searchable()->label('Koperasi'),
-                Select::make('konfigurasi_coa')->options(MasterCoa::whereRaw('LENGTH(kode_coa) >= 4')->where('saldo_normal','Debet')->where('kode_coa','like','5%')->get()->pluck('title', 'kode_coa'))->required()->searchable()->label('Transaksi'),
+                Select::make('konfigurasi_coa')->options(MasterCoa::whereRaw('LENGTH(kode_coa) >= 4')
+                ->where(function ($query) {
+                    $query->where('kode_coa', 'like', '4%')
+                          ->orWhere('kode_coa', 'like', '5%');
+                })
+                ->get()
+                ->pluck('title', 'kode_coa')
+            )->required()->searchable()->label('Transaksi'),
                 Forms\Components\DatePicker::make('tanggal')
                     ->required(),
                 Forms\Components\TextInput::make('nominal')

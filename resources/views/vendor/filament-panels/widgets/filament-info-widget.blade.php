@@ -7,11 +7,11 @@
                     rel="noopener noreferrer"
                     target="_blank"
                 >
-                    {{env('APP_NAME')}}
+                Dinas Koperasi UMKM Prov. Sultra
                 </a>
 
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    {{date('Y')}} - {{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}
+                    Copyright © {{date('Y')}} <a href="{{url('/')}}">Aplikasi Laporan Keuangan Koperasi Simpan Pinjam (USP)</a> | <a href="https://hdnmetatech.com" target="__blank">HMS</a>
                 </p>
             </div>
 

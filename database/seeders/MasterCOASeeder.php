@@ -95,7 +95,7 @@ class MasterCOASeeder extends Seeder
 
             ['id' => 71, 'title' => 'PENDAPATAN NON ANGGOTA', 'parent_id' => 65, 'order' => 2, 'kode_coa' => '42', 'kelompok' => 'PENDAPATAN NON ANGGOTA', 'saldo_normal' => 'Kredit'],
             ['id' => 72, 'title' => 'Pendapatan Jasa Pinjaman non anggota', 'parent_id' => 71, 'order' => 1, 'kode_coa' => '4201', 'kelompok' => 'Pendapatan Jasa Pinjaman non anggota', 'saldo_normal' => 'Kredit'],
-            ['id' => 73, 'title' => 'Pendapatan Administrasi non anggota', 'parent_id' => 71, 'order' => 2, 'kode_coa' => '4202', 'kelompok' => 'Pendapatan Administrasi non anggota', 'saldo_normal' => 'Kredit'],
+            ['id' => 73, 'title' => 'Pendapatan Administrasi non anggota, Hibah atau Sejenisnya', 'parent_id' => 71, 'order' => 2, 'kode_coa' => '4202', 'kelompok' => 'Pendapatan Administrasi non anggota, Hibah atau Sejenisnya', 'saldo_normal' => 'Kredit'],
             ['id' => 74, 'title' => 'Pendapatan Provisi non anggota', 'parent_id' => 71, 'order' => 3, 'kode_coa' => '4203', 'kelompok' => 'Pendapatan Provisi non anggota', 'saldo_normal' => 'Kredit'],
             ['id' => 75, 'title' => 'Pendapatan Jasa Pelayanan Lainnya non anggota', 'parent_id' => 71, 'order' => 4, 'kode_coa' => '4204', 'kelompok' => 'Pendapatan Jasa Pelayanan Lainnya non anggota', 'saldo_normal' => 'Kredit'],
 
@@ -122,7 +122,7 @@ class MasterCOASeeder extends Seeder
             ['id' => 94, 'title' => 'Biaya pemeliharaan', 'parent_id' => 88, 'order' => 6, 'kode_coa' => '5206', 'kelompok' => 'Biaya pemeliharaan', 'saldo_normal' => 'Debet'],
             ['id' => 95, 'title' => 'Biaya Pemasaran dan Promosi', 'parent_id' => 88, 'order' => 7, 'kode_coa' => '5207', 'kelompok' => 'Biaya Pemasaran dan Promosi', 'saldo_normal' => 'Debet'],
             ['id' => 96, 'title' => 'Biaya Transportasi', 'parent_id' => 88, 'order' => 8, 'kode_coa' => '5208', 'kelompok' => 'Biaya Transportasi', 'saldo_normal' => 'Debet'],
-            ['id' => 97, 'title' => 'Biaya administrasi dan umum', 'parent_id' => 88, 'order' => 9, 'kode_coa' => '5209', 'kelompok' => 'Biaya administrasi dan umum', 'saldo_normal' => 'Debet'],
+            ['id' => 97, 'title' => 'Biaya administrasi, umum, dan Alat Tulis Kantor', 'parent_id' => 88, 'order' => 9, 'kode_coa' => '5209', 'kelompok' => 'Biaya administrasi, umum, dan Alat Tulis Kantor', 'saldo_normal' => 'Debet'],
             ['id' => 98, 'title' => 'Biaya Pajak (tidak termasuk pajak penghasilan)', 'parent_id' => 88, 'order' => 10, 'kode_coa' => '5214', 'kelompok' => 'Biaya Pajak (tidak termasuk pajak penghasilan)', 'saldo_normal' => 'Debet'],
             ['id' => 99, 'title' => 'Biaya operasional lainnya', 'parent_id' => 88, 'order' => 11, 'kode_coa' => '5215', 'kelompok' => 'Biaya operasional lainnya', 'saldo_normal' => 'Debet'],
 

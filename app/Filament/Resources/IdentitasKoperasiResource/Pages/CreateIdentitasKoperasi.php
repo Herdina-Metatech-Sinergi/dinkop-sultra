@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateIdentitasKoperasi extends CreateRecord
 {
     protected static string $resource = IdentitasKoperasiResource::class;
+
+    public function mount(): void
+    {
+        abort_unless(auth()->user()->hasRole(['Admin Dinkop']), 403);
+    }
 }

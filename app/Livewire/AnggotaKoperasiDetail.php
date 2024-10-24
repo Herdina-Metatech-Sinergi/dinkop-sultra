@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Controllers\Controller;
 use App\Models\AnggotaKoperasi;
+use App\Models\IdentitasKoperasi;
 use App\Models\Kredit;
 use App\Models\KreditAngsuran;
 use App\Models\KreditKonvensional;
@@ -1044,6 +1045,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $data['simpanan_wajib'] = SimpananWajibAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
         $data['simpanan_sukarela'] = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->where('menu_id',$this->menu_id)->get();
         $data['kredit'] = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->where('kredit','Flat')->get();
+        $data['identitas_koperasi'] = IdentitasKoperasi::where('id',$this->anggota->identitas_koperasi_id)->first();
 
         return view('livewire.anggota-koperasi-detail',$data);
     }

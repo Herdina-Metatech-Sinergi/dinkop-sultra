@@ -29,35 +29,70 @@ class CreateTransaksiUmum extends CreateRecord
 
         $key = MasterCoa::where('kode_coa',$record->konfigurasi_coa)->first();
 
-        JurnalUmum::updateOrCreate([
-            'jurnal' => $jurnal_kode ?? $jurnal,
-            'akun' => $key->kode_coa,
-        ],[
-            'tanggal' => $date,
-            'deskripsi' => $key->title.' '.$record->deskripsi,
-            'akun' => $key->kode_coa,
-            'd_k' => 'debet',
-            'nominal' => $record->nominal,
-            'user_id' => auth()->user()->id,
-            'jurnal' => $jurnal_kode ?? $jurnal,
-            'identitas_koperasi_id' => $identitas_koperasi_id
-        ]);
+        if ($key->saldo_normal == 'Kredit') {
+            # code...
+            $key2 = MasterCoa::where('title','Kas')->first();
 
-        $key = MasterCoa::where('title','Kas')->first();
+            JurnalUmum::updateOrCreate([
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'akun' => $key2->kode_coa,
+            ],[
+                'tanggal' => $date,
+                'deskripsi' => $key2->title,
+                'akun' => $key2->kode_coa,
+                'd_k' => 'debet',
+                'nominal' => $record->nominal,
+                'user_id' => auth()->user()->id,
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'identitas_koperasi_id' => $identitas_koperasi_id
+            ]);
 
-        JurnalUmum::updateOrCreate([
-            'jurnal' => $jurnal_kode ?? $jurnal,
-            'akun' => $key->kode_coa,
-        ],[
-            'tanggal' => $date,
-            'deskripsi' => $key->title,
-            'akun' => $key->kode_coa,
-            'd_k' => 'kredit',
-            'nominal' => $record->nominal,
-            'user_id' => auth()->user()->id,
-            'jurnal' => $jurnal_kode ?? $jurnal,
-            'identitas_koperasi_id' => $identitas_koperasi_id
-        ]);
+            JurnalUmum::updateOrCreate([
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'akun' => $key->kode_coa,
+            ],[
+                'tanggal' => $date,
+                'deskripsi' => $key->title.' '.$record->deskripsi,
+                'akun' => $key->kode_coa,
+                'd_k' => strtolower($key->saldo_normal),
+                'nominal' => $record->nominal,
+                'user_id' => auth()->user()->id,
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'identitas_koperasi_id' => $identitas_koperasi_id
+            ]);
+
+        }else{
+
+            JurnalUmum::updateOrCreate([
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'akun' => $key->kode_coa,
+            ],[
+                'tanggal' => $date,
+                'deskripsi' => $key->title.' '.$record->deskripsi,
+                'akun' => $key->kode_coa,
+                'd_k' => strtolower($key->saldo_normal),
+                'nominal' => $record->nominal,
+                'user_id' => auth()->user()->id,
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'identitas_koperasi_id' => $identitas_koperasi_id
+            ]);
+
+            $key2 = MasterCoa::where('title','Kas')->first();
+
+            JurnalUmum::updateOrCreate([
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'akun' => $key2->kode_coa,
+            ],[
+                'tanggal' => $date,
+                'deskripsi' => $key2->title,
+                'akun' => $key2->kode_coa,
+                'd_k' => 'kredit',
+                'nominal' => $record->nominal,
+                'user_id' => auth()->user()->id,
+                'jurnal' => $jurnal_kode ?? $jurnal,
+                'identitas_koperasi_id' => $identitas_koperasi_id
+            ]);
+        }
 
     }
 }

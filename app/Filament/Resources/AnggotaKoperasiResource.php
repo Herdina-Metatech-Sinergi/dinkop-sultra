@@ -73,6 +73,11 @@ class AnggotaKoperasiResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->maxLength(255),
+                Forms\Components\Select::make('jenis_kelamin')
+                    ->options([
+                        'Laki-laki' => 'Laki-laki',
+                        'Perempuan' => 'Perempuan',
+                    ])->required(),
                 Forms\Components\DatePicker::make('tgl_masuk'),
                 Forms\Components\DatePicker::make('tgl_keluar'),
             ]);

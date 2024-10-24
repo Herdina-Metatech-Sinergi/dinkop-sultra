@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
 
         $user->assignRole('Admin Koperasi');
 
-        $this->call(IdentitasKoperasiSeeder::class);
+        // $this->call(IdentitasKoperasiSeeder::class);
 
         $this->call(MasterCOASeeder::class);
         $this->call(KonfigurasiCoaSeeder::class);

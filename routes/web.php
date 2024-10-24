@@ -25,7 +25,7 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return redirect('/admin/login');
-});
+})->name('login');
 
 
 Route::get('admin/cetak/jurnal-umum', [CetakController::class,'jurnalUmum']);

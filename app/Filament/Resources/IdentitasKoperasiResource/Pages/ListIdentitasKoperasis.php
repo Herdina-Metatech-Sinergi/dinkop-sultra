@@ -16,4 +16,9 @@ class ListIdentitasKoperasis extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function mount(): void
+    {
+        abort_unless(auth()->user()->hasRole(['Admin Dinkop']), 403);
+    }
 }

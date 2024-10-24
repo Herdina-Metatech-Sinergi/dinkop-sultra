@@ -12,6 +12,8 @@
         />
 
         {{ $slot }}
+
+        <p style="font-size: 12px">Copyright © {{date('Y')}} <a href="{{url('/')}}">Aplikasi Laporan Keuangan Koperasi Simpan Pinjam (USP)</a> | <a href="https://hdnmetatech.com" target="__blank">HMS</a></p>
     </section>
 
     @if (! $this instanceof \Filament\Tables\Contracts\HasTable)

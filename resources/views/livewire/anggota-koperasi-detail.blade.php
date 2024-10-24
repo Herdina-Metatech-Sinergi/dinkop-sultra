@@ -41,7 +41,7 @@
                                 Simpanan Modal
                             </x-tab.nav-button>
                             <x-tab.nav-button tab="tabSimpanan" id="tabcon-simpanan-lainnya">
-                                Simpanan Lainnya
+                                {{$identitas_koperasi->nama_simpanan_lainnya ?? 'Simpanan Lainnya'}}
                             </x-tab.nav-button>
                             <x-tab.nav-button tab="tabSimpanan" id="tabcon-simpanan-non-modal">
                                 Simpanan Non Modal
@@ -305,7 +305,7 @@
                                         Simpan
                                     </x-button.button>
                                 </form>
-                                <x-table-sm.table title="" subtitle="Simpanan Lainnya" customClass='mt-5'>
+                                <x-table-sm.table title="" subtitle="{{$identitas_koperasi->nama_simpanan_lainnya ?? 'Simpanan Lainnya'}}" customClass='mt-5'>
 
                                     <x-slot:th>
                                         <x-table-sm.table-th>

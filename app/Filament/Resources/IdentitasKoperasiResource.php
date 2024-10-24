@@ -21,6 +21,17 @@ class IdentitasKoperasiResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Koperasi';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Hanya menampilkan menu jika pengguna memiliki role 'Admin Dinkop'
+        return auth()->user()->hasRole('Admin Dinkop');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status','Menunggu')->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -50,8 +61,7 @@ class IdentitasKoperasiResource extends Resource
                 Forms\Components\TextInput::make('nama_pengawas')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('telp_fax_email')
-                    ->email()
-                    ->tel()
+                ->label('No Telepon')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('website')
                     ->maxLength(255),
@@ -64,8 +74,14 @@ class IdentitasKoperasiResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('bentuk_koperasi')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('jenis_koperasi')
-                    ->maxLength(255),
+                Forms\Components\Select::make('jenis_koperasi')
+                    ->options([
+                        'Konsumen' => 'Konsumen',
+                        'Produsen' => 'Produsen',
+                        'Jasa' => 'Jasa',
+                        'Pemasaran' => 'Pemasaran',
+                        'Simpan Pinjam' => 'Simpan Pinjam',
+                    ]),
                 Forms\Components\TextInput::make('nomor_induk_koperasi_nik')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('iusp')
@@ -85,6 +101,15 @@ class IdentitasKoperasiResource extends Resource
                 ->relationship('user', 'name') // Menggunakan relasi 'category' dengan menampilkan field 'name'
                 ->required()
                 ->searchable(),
+                Forms\Components\TextInput::make('nama_simpanan_lainnya')
+                    ->maxLength(50),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'Menunggu' => 'Menunggu',
+                        'Setujui' => 'Setujui',
+                        'Tolak' => 'Tolak',
+                    ])
+                    ->hidden(!auth()->user()->hasRole(['Admin Dinkop'])),
             ]);
     }
 

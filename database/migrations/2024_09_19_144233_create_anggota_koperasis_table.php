@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('no_hp')->nullable();
             $table->string('email')->nullable();
             $table->string('ktp')->nullable();
+            $table->string('jenis_kelamin')->nullable();
             $table->date('tgl_masuk')->nullable();
             $table->date('tgl_keluar')->nullable();
             $table->timestamps();

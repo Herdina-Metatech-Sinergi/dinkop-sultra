@@ -41,6 +41,8 @@ return new class extends Migration
             $table->integer('jumlah_anggota_pria')->nullable();
             $table->integer('jumlah_anggota_wanita')->nullable();
             $table->integer('jumlah_kantor_cabang')->nullable();
+            $table->string('status')->default('Menunggu');
+            $table->string('nama_simpanan_lainnya')->default('Simpanan Lainnya');
             $table->unsignedBigInteger('user_id')->nullable(); // kolom foreign key
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
