@@ -84,7 +84,7 @@ class IdentitasKoperasiResource extends Resource
                     ]),
                 Forms\Components\TextInput::make('nomor_induk_koperasi_nik')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('iusp')
+                Forms\Components\TextInput::make('iusp')->label('No. IUSP')
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('tgl_iusp'),
                 Forms\Components\TextInput::make('nib')
@@ -159,7 +159,7 @@ class IdentitasKoperasiResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nomor_induk_koperasi_nik')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('iusp')
+                Tables\Columns\TextColumn::make('iusp')->label('No. IUSP')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tgl_iusp')
                     ->date()

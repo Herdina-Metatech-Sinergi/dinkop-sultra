@@ -712,9 +712,14 @@
                                                                     $total_kredit_lunas = 0;
                                                                 @endphp
                                                                 @forelse ($data['kredit_angsuran'] ?? [] as $data2)
+
                                                                     <x-table-sm.table-tr>
                                                                         <x-table-sm.table-td>
-                                                                            {{ @$data2['tanggal_jatuh_tempo'] }}
+                                                                                <x-input.input-sm type="date"
+                                                                                wire:model="angsuran.{{$data2['id']}}.tanggal_jatuh_tempo"
+                                                                                value="{{ @$data2['tanggal_jatuh_tempo'] }}"
+                                                                                    class="form-input w-full text-center"
+                                                                                    wire:change="updateAngsuran({{ $data2['id'] }}, 'tanggal_jatuh_tempo')" />
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td>
@@ -722,7 +727,13 @@
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td class='text-right'>
-                                                                            {{ App\Http\Controllers\Controller::rupiah(@$data2['nominal_pokok']) }}
+                                                                                <x-input.input-sm type="number"
+                                                                                value="{{ @$data2['nominal_pokok'] }}"
+                                                                                wire:model="angsuran.{{$data2['id']}}.nominal_pokok"
+
+                                                                                    class="form-input w-full text-right"
+                                                                                    wire:change="updateAngsuran({{ $data2['id'] }}, 'nominal_pokok')" />
+                                                                            {{-- {{ App\Http\Controllers\Controller::rupiah(@$data2['nominal_pokok']) }} --}}
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td>
@@ -845,5 +856,14 @@
 
 
 </div>
-
 </div>
+
+@push('scripts')
+<script>
+    function updateAngsuranJS(id,field,value){
+        console.log(id);
+        console.log(field);
+        console.log(value);
+    }
+</script>
+@endpush

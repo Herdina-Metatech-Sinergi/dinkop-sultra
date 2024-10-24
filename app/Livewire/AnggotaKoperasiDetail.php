@@ -14,6 +14,7 @@ use App\Models\SimpananNonModalMenu;
 use App\Models\SimpananPokokAnggota;
 use App\Models\SimpananSukarelaAnggota;
 use App\Models\SimpananWajibAnggota;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -47,6 +48,8 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     public $new_menu_name;
     public $menu_id;
 
+    public $angsuran = [];
+
 
     public function mount($anggota_id){
         $this->anggota_id = $anggota_id;
@@ -64,6 +67,18 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $this->formKredit->fill();
 
         $this->menu_id = SimpananNonModalMenu::first()->id ?? null;
+
+        $kredit = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->where('kredit','Flat')->get();
+        foreach ($kredit as $key => $value) {
+            # code...
+            foreach ($value['kredit_angsuran'] as $key2 => $value2) {
+                # code...
+                $this->angsuran[$value2['id']] = [
+                    'tanggal_jatuh_tempo' => $value2['tanggal_jatuh_tempo'],
+                    'nominal_pokok' => $value2['nominal_pokok'],
+                ];
+            }
+        }
 
     }
 
@@ -468,9 +483,10 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     {
         return $form
             ->schema([
-                Grid::make(2)->schema([
+                Grid::make(3)->schema([
                     TextInput::make('kredit')->readOnly()->label('Jenis Kredit')->default('Flat'),
                     TextInput::make('keterangan')->required()->label('No Pinjaman'),
+                    DatePicker::make('tanggal')->required()->label('Tanggal Pinjaman'),
                 ]),
                 Grid::make(4)->schema([
                     // Principal Loan Amount (Pinjaman Pokok)
@@ -545,39 +561,90 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
                 ]),
                 Grid::make(3)->schema([
-                    TextInput::make('administrasi')->label('Administrasi (%)')->numeric()->required()->default(0)->afterStateUpdated(function (callable $set, $state, $get) {
-                        // Ambil data input dari form
-                        $principal = $get('nominal_pinjaman');  // Pinjaman Pokok
-                        $admin = $get('administrasi'); // Suku Bunga (%)
-                        $cadangan = $get('cadangan'); // Jangka Waktu (bulan)
+                    Select::make('jenis_administrasi')
+                        ->label('Jenis Administrasi')
+                        ->options([
+                            'persen' => 'Administrasi (%)',
+                            'rupiah' => 'Administrasi (Rp)',
+                        ])
+                        ->required()
+                        ->default('persen')
+                        ->reactive(),
 
-                        // Hitung angsuran per bulan
-                        if ($principal && $admin && $cadangan) {
-                            $nom_admin = $principal * $admin / 100;
-                            $nom_cadangan = $principal * $cadangan / 100;
-                            $nominal_bayar = $principal - $nom_admin - $nom_cadangan;
+                    TextInput::make('administrasi_persen')
+                        ->label('Administrasi (%)')
+                        ->numeric()
+                        ->default(0)
+                        ->required(fn ($get) => $get('jenis_administrasi') === 'persen') // Wajib jika persen dipilih
+                        ->hidden(fn ($get) => $get('jenis_administrasi') !== 'persen') // Tersembunyi jika bukan persen
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, $state, $get) {
+                            if ($get('jenis_administrasi') === 'persen') {
+                                $principal = $get('nominal_pinjaman');
+                                $admin = $state;
+                                $cadangan = $get('cadangan');
 
-                            // Simpan hasilnya ke angsuran_bulan
-                            $set('nominal_bayar', round($nominal_bayar, 2));
-                        }
-                    })->reactive(),
-                    TextInput::make('cadangan')->label('Cadangan (%)')->numeric()->required()->default(0)->afterStateUpdated(function (callable $set, $state, $get) {
-                        // Ambil data input dari form
-                        $principal = $get('nominal_pinjaman');  // Pinjaman Pokok
-                        $admin = $get('administrasi'); // Suku Bunga (%)
-                        $cadangan = $get('cadangan'); // Jangka Waktu (bulan)
+                                if ($principal && $admin && $cadangan) {
+                                    $nom_admin = $principal * $admin / 100;
+                                    $nom_cadangan = $principal * $cadangan / 100;
+                                    $nominal_bayar = $principal - $nom_admin - $nom_cadangan;
 
-                        // Hitung angsuran per bulan
-                        if ($principal && $admin && $cadangan) {
-                            $nom_admin = $principal * $admin / 100;
-                            $nom_cadangan = $principal * $cadangan / 100;
-                            $nominal_bayar = $principal - $nom_admin - $nom_cadangan;
+                                    $set('nominal_bayar', round($nominal_bayar, 2));
+                                }
+                            }
+                        }),
 
-                            // Simpan hasilnya ke angsuran_bulan
-                            $set('nominal_bayar', round($nominal_bayar, 2));
-                        }
-                    })->reactive(),
-                    TextInput::make('nominal_bayar')->label('Nominal Dibayarkan')->numeric()->readOnly()->default(0)->helperText('Kalkulasi Otomatis')->reactive(),
+                    TextInput::make('administrasi_rupiah')
+                        ->label('Administrasi (Rp)')
+                        ->numeric()
+                        ->default(0)
+                        ->required(fn ($get) => $get('jenis_administrasi') === 'rupiah') // Wajib jika rupiah dipilih
+                        ->hidden(fn ($get) => $get('jenis_administrasi') !== 'rupiah') // Tersembunyi jika bukan rupiah
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, $state, $get) {
+                            if ($get('jenis_administrasi') === 'rupiah') {
+                                $principal = $get('nominal_pinjaman');
+                                $admin = $state;
+                                $cadangan = $get('cadangan');
+
+                                if ($principal && $admin ) {
+                                    $nominal_bayar = $principal - $admin - ($principal * $cadangan / 100);
+
+                                    $set('nominal_bayar', round($nominal_bayar, 2));
+                                }
+                            }
+                        }),
+
+                    TextInput::make('cadangan')
+                        ->label('Cadangan (%)')
+                        ->numeric()
+                        ->default(0)
+                        ->required()
+                        ->reactive()
+                        ->afterStateUpdated(function (callable $set, $state, $get) {
+                            $principal = $get('nominal_pinjaman');
+                            $admin = $get('jenis_administrasi') === 'persen'
+                                ? $get('administrasi_persen')
+                                : $get('administrasi_rupiah');
+                            $cadangan = $state;
+
+                            if ($principal && $admin ) {
+                                $nominal_bayar = $get('jenis_administrasi') === 'persen'
+                                    ? $principal - ($principal * $admin / 100) - ($principal * $cadangan / 100)
+                                    : $principal - $admin - ($principal * $cadangan / 100);
+
+                                $set('nominal_bayar', round($nominal_bayar, 2));
+                            }
+                        }),
+
+                    TextInput::make('nominal_bayar')
+                        ->label('Nominal Dibayarkan')
+                        ->numeric()
+                        ->readOnly()
+                        ->default(0)
+                        ->helperText('Kalkulasi Otomatis')
+                        ->reactive(),
+
                 ]),
             ])
             ->model(Kredit::class)
@@ -650,6 +717,10 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
     public function submitKredit(){
         $data = $this->formKredit->getState();
+        $tanggal = $data['tanggal'];
+        $tanggalCarbon = Carbon::parse($tanggal);
+
+        unset($data['jenis_administrasi']);
         $data['anggota_koperasi_id'] = $this->anggota_id;
 
         if ($this->kredit_id) {
@@ -683,7 +754,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                 'jumlah_angsuran' => $total_installment,
                 'baki_debet' => $principal - ($i * ($principal / $num_installments)),
                 'kredit_id' => $k_id,
-                'tanggal_jatuh_tempo' => now()->addMonths($i),  // Set the due date
+                'tanggal_jatuh_tempo' => $tanggalCarbon->addMonths($i),  // Set the due date
             ]);
         }
 
@@ -1038,6 +1109,19 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         }
     }
 
+    public function updateAngsuran($id, $field)
+    {
+        $value = $this->angsuran[$id][$field] ?? null;
+
+        if ($value !== null) {
+            // Lakukan penyimpanan ke database
+            KreditAngsuran::where('id', $id)->update([$field => $value]);
+
+            // Flash message atau notifikasi jika diperlukan
+            return Notification::make()->title('Data berhasil diupdate!')->success()->send();
+        }
+    }
+
     public function render()
     {
         $data['simpanan_pokok'] = SimpananPokokAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
@@ -1045,6 +1129,13 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $data['simpanan_wajib'] = SimpananWajibAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
         $data['simpanan_sukarela'] = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->where('menu_id',$this->menu_id)->get();
         $data['kredit'] = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->where('kredit','Flat')->get();
+        foreach ($data['kredit'] as $key => $value) {
+            # code...
+            foreach ($value['kredit_angsuran'] as $key2 => $value2) {
+                # code...
+                // $this->angsuran[$value2['id']] = $value2;
+            }
+        }
         $data['identitas_koperasi'] = IdentitasKoperasi::where('id',$this->anggota->identitas_koperasi_id)->first();
 
         return view('livewire.anggota-koperasi-detail',$data);

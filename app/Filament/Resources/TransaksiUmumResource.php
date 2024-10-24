@@ -77,9 +77,8 @@ class TransaksiUmumResource extends Resource
         return $table
             ->columns([
 
-                Tables\Columns\TextColumn::make('konfigurasi_coa')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('master_coa.title')->label('COA')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nominal')

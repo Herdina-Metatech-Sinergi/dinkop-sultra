@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('kredits', function (Blueprint $table) {
             //
-            $table->integer('administrasi')->nullable();
+            $table->integer('administrasi_persen')->nullable();
+            $table->integer('administrasi_rupiah')->nullable();
             $table->integer('cadangan')->nullable();
             $table->integer('nominal_bayar')->nullable();
         });

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('dp')->nullable();
             $table->integer('nominal_pinjaman_margin')->nullable();
             $table->integer('tenor')->default(1);
+            $table->date('tanggal')->nullable();
 
             $table->dropColumn(['nominal_pinjaman_margin', 'dp']);
 

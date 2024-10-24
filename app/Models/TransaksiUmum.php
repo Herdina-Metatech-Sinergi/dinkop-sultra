@@ -11,4 +11,7 @@ class TransaksiUmum extends Model
 
     protected $guarded = [];
 
+    public function master_coa(){
+        return $this->belongsTo(MasterCoa::class,'konfigurasi_coa','kode_coa');
+    }
 }
