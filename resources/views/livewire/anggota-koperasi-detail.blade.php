@@ -715,11 +715,18 @@
 
                                                                     <x-table-sm.table-tr>
                                                                         <x-table-sm.table-td>
-                                                                                <x-input.input-sm type="date"
-                                                                                wire:model="angsuran.{{$data2['id']}}.tanggal_jatuh_tempo"
-                                                                                value="{{ @$data2['tanggal_jatuh_tempo'] }}"
-                                                                                    class="form-input w-full text-center"
-                                                                                    wire:change="updateAngsuran({{ $data2['id'] }}, 'tanggal_jatuh_tempo')" />
+                                                                            @if (@$data2['status_pokok'] == 'Belum Lunas')
+                                                                            <x-input.input-sm type="date"
+                                                                            wire:model="angsuran.{{$data2['id']}}.tanggal_jatuh_tempo"
+                                                                            value="{{ @$data2['tanggal_jatuh_tempo'] }}"
+                                                                                class="form-input w-full text-center"
+                                                                                wire:change="updateAngsuran({{ $data2['id'] }}, 'tanggal_jatuh_tempo')" />
+
+                                                                                @else
+                                                                            {{ @$data2['tanggal_jatuh_tempo'] }}
+
+                                                                            @endif
+
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td>
@@ -727,13 +734,19 @@
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td class='text-right'>
+                                                                            @if (@$data2['status_pokok'] == 'Belum Lunas')
+
                                                                                 <x-input.input-sm type="number"
                                                                                 value="{{ @$data2['nominal_pokok'] }}"
                                                                                 wire:model="angsuran.{{$data2['id']}}.nominal_pokok"
 
                                                                                     class="form-input w-full text-right"
                                                                                     wire:change="updateAngsuran({{ $data2['id'] }}, 'nominal_pokok')" />
-                                                                            {{-- {{ App\Http\Controllers\Controller::rupiah(@$data2['nominal_pokok']) }} --}}
+
+                                                                                    @else
+                                                                            {{ App\Http\Controllers\Controller::rupiah(@$data2['nominal_pokok']) }}
+
+                                                                                    @endif
                                                                         </x-table-sm.table-td>
 
                                                                         <x-table-sm.table-td>
