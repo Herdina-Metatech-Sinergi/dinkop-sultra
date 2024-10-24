@@ -147,13 +147,13 @@
                                                                     wire:click="goUbahItemSimpananPokok({{ $data['id'] }})"
                                                                     wire:loading.attr="disabled"
                                                                     wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-edit>
+                                                                </x-button.button-only-edit> Ubah
                                                                 <x-button.button-only-delete color="danger"
                                                                     onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
                                                                     wire:click="goHapusItemSimpananPokok({{ $data['id'] }})"
                                                                     wire:loading.attr="disabled"
                                                                     wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-delete>
+                                                                </x-button.button-only-delete> Hapus
                                                             </x-table-sm.table-td>
                                                         </x-table-sm.table-tr>
                                                     @empty
@@ -260,13 +260,13 @@
                                                                     wire:click="goUbahItemSimpananWajib({{ $data['id'] }})"
                                                                     wire:loading.attr="disabled"
                                                                     wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-edit>
+                                                                </x-button.button-only-edit> Ubah
                                                                 <x-button.button-only-delete color="danger"
                                                                     onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
                                                                     wire:click="goHapusItemSimpananWajib({{ $data['id'] }})"
                                                                     wire:loading.attr="disabled"
                                                                     wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                </x-button.button-only-delete>
+                                                                </x-button.button-only-delete> Hapus
                                                             </x-table-sm.table-td>
                                                         </x-table-sm.table-tr>
                                                     @empty
@@ -377,13 +377,13 @@
                                                         wire:click="goUbahItemSimpananLainnya({{ $data['id'] }})"
                                                         wire:loading.attr="disabled"
                                                         wire:loading.class.delay="opacity-70 cursor-wait">
-                                                    </x-button.button-only-edit>
+                                                    </x-button.button-only-edit> Ubah
                                                     <x-button.button-only-delete color="danger"
                                                         onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
                                                         wire:click="goHapusItemSimpananLainnya({{ $data['id'] }})"
                                                         wire:loading.attr="disabled"
                                                         wire:loading.class.delay="opacity-70 cursor-wait">
-                                                    </x-button.button-only-delete>
+                                                    </x-button.button-only-delete> Hapus
                                                 </x-table-sm.table-td>
                                             </x-table-sm.table-tr>
                                         @empty
@@ -518,13 +518,13 @@
                                                                         wire:click="goUbahItemSimpananSukarela({{ $data['id'] }})"
                                                                         wire:loading.attr="disabled"
                                                                         wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                    </x-button.button-only-edit>
+                                                                    </x-button.button-only-edit> Ubah
                                                                     <x-button.button-only-delete color="danger"
                                                                         onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
                                                                         wire:click="goHapusItemSimpananSukarela({{ $data['id'] }})"
                                                                         wire:loading.attr="disabled"
                                                                         wire:loading.class.delay="opacity-70 cursor-wait">
-                                                                    </x-button.button-only-delete>
+                                                                    </x-button.button-only-delete> Hapus
                                                                 </x-table-sm.table-td>
                                                             </x-table-sm.table-tr>
                                                         @empty
@@ -658,13 +658,13 @@
                                                             wire:click="goUbahItemKredit({{ $data['id'] }})"
                                                             wire:loading.attr="disabled"
                                                             wire:loading.class.delay="opacity-70 cursor-wait">
-                                                        </x-button.button-only-edit>
+                                                        </x-button.button-only-edit> Ubah
                                                         <x-button.button-only-delete color="danger"
                                                             onclick="confirm('Hapus item?') || event.stopImmediatePropagation()"
                                                             wire:click="goHapusItemKredit({{ $data['id'] }})"
                                                             wire:loading.attr="disabled"
                                                             wire:loading.class.delay="opacity-70 cursor-wait">
-                                                        </x-button.button-only-delete>
+                                                        </x-button.button-only-delete> Hapus
                                                     </x-table-sm.table-td>
                                                 </x-table-sm.table-tr>
 
@@ -835,6 +835,24 @@
                                                                         {{ App\Http\Controllers\Controller::rupiah($total_kredit - $total_kredit_lunas) }}
                                                                     </x-table-sm.table-td>
                                                                 </x-table-sm.table-tr>
+
+                                                                @if ($total_kredit - $total_kredit_lunas != 0)
+                                                                <x-table-sm.table-tr>
+                                                                    <x-table-sm.table-td colspan='6' customClass='border-0 text-right font-bold'>
+                                                                        Jadikan Hutang Baru (TopUp)
+                                                                    </x-table-sm.table-td>
+                                                                    <x-table-sm.table-td colspan='1' customClass='border-0 text-right font-bold'>
+                                                                        <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"
+                                                                            wire:click="buatHutangBaru('{{$total_kredit - $total_kredit_lunas}}')">
+                                                                            <x-slot:custom_svg>
+                                                                                <x-button.svg.plus />
+                                                                            </x-slot:custom_svg>
+                                                                            Buat
+                                                                        </x-button.button>
+                                                                    </x-table-sm.table-td>
+                                                                </x-table-sm.table-tr>
+                                                                @endif
+
                                                             </x-slot:row>
                                                         </x-table-sm.table>
 

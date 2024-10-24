@@ -1122,6 +1122,12 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         }
     }
 
+    public function buatHutangBaru($utang){
+        $this->formKredit->fill([
+            'nominal_pinjaman' => $utang
+        ]);
+    }
+
     public function render()
     {
         $data['simpanan_pokok'] = SimpananPokokAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
