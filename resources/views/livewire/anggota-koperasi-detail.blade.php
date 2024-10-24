@@ -18,6 +18,32 @@
 
     </div>
 
+    <x-table-sm.table title="" subtitle="" customClass=''>
+
+        <x-slot:row>
+
+        @foreach ($porto as $key => $item)
+        <x-table-sm.table-tr>
+
+            <x-table-sm.table-th customClass='text-center'>
+                {{$key}}
+            </x-table-sm.table-th>
+            <x-table-sm.table-td>
+                {{ App\Http\Controllers\Controller::rupiah(@$item) }}
+            </x-table-sm.table-td>
+        </x-table-sm.table-tr>
+        @endforeach
+
+        </x-slot:row>
+
+        {{-- </x-slot:th>
+        <x-slot:th>
+
+
+        </x-slot:th> --}}
+    </x-table-sm.table>
+
+    <p><br></p>
     {{-- TABS --}}
     <div class="mt-5">
         <x-tab.tab tab="tabAnggota" defaultTab="tabcon-simpanan">
@@ -445,6 +471,17 @@
                                                         Simpan
                                                     </x-button.button>
 
+                                                    <p><br></p>
+                                                    <hr>
+                                                    <p><br></p>
+
+                                                    <h3>Administrasi Perbulan</h3>
+                                                    {{ $this->formSimpananSukarelaAdmin ?? '' }}
+                                                    <p><br></p>
+                                                    <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"  wire:click="submitSimpananNonModalAdmin()">
+                                                        Simpan
+                                                    </x-button.button>
+
                                                 </form>
 
                                                 <x-table-sm.table title="" subtitle="{{$menu->name}}" customClass='mt-5'>
@@ -598,6 +635,9 @@
                                         <x-table-sm.table-th customClass='text-right'>
                                             Nominal Pinjaman
                                         </x-table-sm.table-th>
+                                        <x-table-sm.table-th customClass='text-right'>
+                                            Agunan
+                                        </x-table-sm.table-th>
 
                                         <x-table-sm.table-th customClass='text-right'>
                                             Nominal Dibayarkan
@@ -640,6 +680,9 @@
                                                     </x-table-sm.table-td>
                                                     <x-table-sm.table-td>
                                                         {{ App\Http\Controllers\Controller::rupiah(@$data['nominal_pinjaman']) }}
+                                                    </x-table-sm.table-td>
+                                                    <x-table-sm.table-td customClass="text-center">
+                                                        {{ $data['agunan'] }}
                                                     </x-table-sm.table-td>
                                                     <x-table-sm.table-td>
                                                         {{ App\Http\Controllers\Controller::rupiah(@$data['nominal_bayar']) }}

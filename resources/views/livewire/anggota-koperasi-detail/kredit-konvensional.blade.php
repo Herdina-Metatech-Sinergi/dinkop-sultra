@@ -28,6 +28,10 @@
                 Nominal Pinjaman
             </x-table-sm.table-th>
 
+            <x-table-sm.table-th customClass='text-right'>
+                Agunan
+            </x-table-sm.table-th>
+
 
             <x-table-sm.table-th customClass='text-right'>
                 Suku Jasa per Bulan (%)
@@ -70,6 +74,9 @@
                         </x-table-sm.table-td> --}}
                         <x-table-sm.table-td>
                             {{ App\Http\Controllers\Controller::rupiah(@$data['pinjaman_pokok']) }}
+                        </x-table-sm.table-td>
+                        <x-table-sm.table-td>
+                            {{ $data['agunan'] }}
                         </x-table-sm.table-td>
                         <x-table-sm.table-td>
                             {{ @$data['tarif_layanan'] }} %

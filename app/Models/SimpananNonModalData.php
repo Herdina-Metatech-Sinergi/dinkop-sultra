@@ -11,4 +11,7 @@ class SimpananNonModalData extends Model
 
     protected $guarded = [];
 
+    public function simpanan_non_modal_menu(){
+        return $this->belongsTo(SimpananNonModalMenu::class,'menu_id','id');
+    }
 }

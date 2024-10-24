@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kredit_konvensionals', function (Blueprint $table) {
             $table->id();
             $table->string('kredit');
+            $table->string('agunan')->nullable();
             $table->bigInteger('pinjaman_pokok');
             $table->integer('jangka_waktu'); // dalam bulan
             $table->float('tarif_layanan'); // dalam persen

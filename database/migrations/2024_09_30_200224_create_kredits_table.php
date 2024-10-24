@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kredit');
             $table->string('keterangan')->nullable();
+            $table->string('agunan')->nullable();
             $table->integer('nominal_pinjaman')->nullable();
             $table->integer('dp')->nullable();
             $table->integer('nominal_pinjaman_margin')->nullable();

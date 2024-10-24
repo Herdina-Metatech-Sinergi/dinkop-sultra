@@ -71,6 +71,7 @@ class KreditKonvensional extends Component implements HasForms
                             }
                         })
                         ->reactive(),
+                    TextInput::make('agunan')->label('Agunan')->helperText('Agunan 60% dari pokok pinjaman'),
 
                     TextInput::make('jangka_waktu')
                         ->label('Jangka Waktu (Bulan)')

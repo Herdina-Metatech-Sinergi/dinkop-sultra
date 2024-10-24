@@ -167,6 +167,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         $this->formSimpananSukarela->fill();
         $this->formSimpananSukarelaJasa->fill();
+        $this->formSimpananSukarelaAdmin->fill();
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
     }
 
@@ -212,6 +213,51 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         $this->formSimpananSukarela->fill();
         $this->formSimpananSukarelaJasa->fill();
+        $this->formSimpananSukarelaJasaAdmin->fill();
+        return Notification::make()->title('Berhasil disubmit!')->success()->send();
+    }
+
+    public function submitSimpananNonModalAdmin()
+    {
+
+        $data = $this->formSimpananSukarelaAdmin->getState();
+        $data['anggota_koperasi_id'] = $this->anggota_id;
+        $data['menu_id'] = $this->menu_id;
+
+        $data['d_k'] = 'Kredit';
+        $data['nominal'] = $data['nominal_admin'];
+        $data['tanggal'] = date('Y-m-d');
+        $data['deskripsi'] = 'Admin Bulanan : '.$data['tanggal'];
+
+        unset($data['tanggal_akhir']);
+        unset($data['saldo_akhir']);
+        unset($data['tingkat_bunga']);
+        unset($data['nominal_admin']);
+
+        $cek = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->latest()->first();
+        if (@$cek->tanggal > $data['tanggal']) {
+            # code...
+            return Notification::make()->title('Gagal disubmit, tanggal tidak boleh kurang dari transaksi terakhir!')->danger()->send();
+        }
+        $simpok = SimpananNonModalData::create($data);
+
+
+        $controller = new Controller();
+        if ($data['d_k'] == 'Kredit') {
+
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+        }
+        $this->simpok_id = null;
+        $this->simwa_id = null;
+        $this->simsem_id = null;
+        $this->formHeader->fill();
+        $this->formSimpananPokok->fill();
+        $this->formSimpananWajib->fill();
+        $this->formSimpananLainnya->fill();
+
+        $this->formSimpananSukarela->fill();
+        $this->formSimpananSukarelaJasa->fill();
+        $this->formSimpananSukarelaAdmin->fill();
         return Notification::make()->title('Berhasil disubmit!')->success()->send();
     }
 
@@ -225,6 +271,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             'formSimpananWajib',
             'formSimpananSukarela',
             'formSimpananSukarelaJasa',
+            'formSimpananSukarelaAdmin',
             'formKredit',
             'formSimpananNonModal'
         ];
@@ -487,6 +534,8 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                     TextInput::make('kredit')->readOnly()->label('Jenis Kredit')->default('Flat'),
                     TextInput::make('keterangan')->required()->label('No Pinjaman'),
                     DatePicker::make('tanggal')->required()->label('Tanggal Pinjaman'),
+                    TextInput::make('agunan')->label('Agunan')->helperText('Agunan 60% dari pokok pinjaman'),
+
                 ]),
                 Grid::make(4)->schema([
                     // Principal Loan Amount (Pinjaman Pokok)
@@ -709,6 +758,21 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                         $set('nominal_jasa', round($hit_bunga) );
                     }),
                     TextInput::make('nominal_jasa')->label('Nominal Jasa')->readOnly()->reactive(),
+             ]),
+
+            ])
+            ->model(SimpananSukarelaAnggota::class)->statePath('data');
+    }
+
+
+    public function formSimpananSukarelaAdmin(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Grid::make(2)->schema([
+                    DatePicker::make('tanggal_akhir')->required()->label('Tanggal Akhir Bulan'),
+
+                    TextInput::make('nominal_admin')->label('Nominal Admin'),
              ]),
 
             ])
@@ -1135,6 +1199,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $data['simpanan_wajib'] = SimpananWajibAnggota::where('anggota_koperasi_id',$this->anggota_id)->get();
         $data['simpanan_sukarela'] = SimpananNonModalData::where('anggota_koperasi_id',$this->anggota_id)->where('menu_id',$this->menu_id)->get();
         $data['kredit'] = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->where('kredit','Flat')->get();
+        $data['kredit_konvensional'] = KreditKonvensional::with('kredit_konvensional_angsuran')->where('anggota_koperasi_id',$this->anggota_id)->get();
         foreach ($data['kredit'] as $key => $value) {
             # code...
             foreach ($value['kredit_angsuran'] as $key2 => $value2) {
@@ -1143,6 +1208,146 @@ class AnggotaKoperasiDetail extends Component implements HasForms
             }
         }
         $data['identitas_koperasi'] = IdentitasKoperasi::where('id',$this->anggota->identitas_koperasi_id)->first();
+
+        // hitung
+        $porto = [];
+
+        $lunas = 0;
+        $belum_lunas = 0;
+        foreach ($data['kredit'] as $key => $value) {
+            # code...
+            foreach ($value->kredit_angsuran as $key2 => $value2) {
+                # code...
+                if ($value2->status_pokok == 'Belum Lunas') {
+                    # code...
+                    $belum_lunas += $value2->nominal_pokok;
+                }
+
+                if ($value2->status_bunga == 'Belum Lunas') {
+                    # code...
+                    $belum_lunas += $value2->nominal_bunga;
+                }
+
+                if ($value2->status_pokok == 'Lunas') {
+                    # code...
+                    $lunas += $value2->nominal_pokok;
+                }
+
+                if ($value2->status_bunga == 'Lunas') {
+                    # code...
+                    $lunas += $value2->nominal_bunga;
+                }
+
+
+            }
+        }
+
+        $porto ['Kredit Flat Belum Lunas'] = $belum_lunas;
+        $porto ['Kredit Flat Lunas'] = $lunas;
+
+        $lunas = 0;
+        $belum_lunas = 0;
+        foreach ($data['kredit_konvensional'] as $key => $value) {
+            # code...
+            foreach ($value->kredit_konvensional_angsuran as $key2 => $value2) {
+                # code...
+                if ($value2->status_pokok == 'Belum Lunas') {
+                    # code...
+                    $belum_lunas += $value2->angsuran_pokok;
+
+                }
+
+                if ($value2->status_bunga == 'Belum Lunas') {
+                    # code...
+                    $belum_lunas += $value2->angsuran_bunga;
+                    continue;
+                }
+
+                if ($value2->status_pokok == 'Lunas') {
+                    # code...
+                    $lunas += $value2->angsuran_pokok;
+
+                }
+
+                if ($value2->status_bunga == 'Lunas') {
+                    # code...
+                    $lunas += $value2->angsuran_bunga;
+                    continue;
+                }
+            }
+        }
+        $porto ['Kredit Konvensional Belum Lunas'] = $belum_lunas;
+        $porto ['Kredit Konvensional Lunas'] = $lunas;
+
+        $total = 0;
+        foreach ($data['simpanan_pokok'] as $key => $value) {
+            # code...
+            if ($value['d_k'] == 'Debet') {
+                $total += $value['nominal'];
+            }
+
+            if ($value['d_k'] == 'Kredit') {
+                $total -= $value['nominal'];
+            }
+
+        }
+
+        $porto ['Simpanan Pokok'] = $total;
+
+        $total = 0;
+        foreach ($data['simpanan_wajib'] as $key => $value) {
+            # code...
+            if ($value['d_k'] == 'Debet') {
+                $total += $value['nominal'];
+            }
+
+            if ($value['d_k'] == 'Kredit') {
+                $total -= $value['nominal'];
+            }
+
+        }
+
+        $porto ['Simpanan Wajib'] = $total;
+
+        $total = 0;
+        foreach ($data['simpanan_lainnya'] as $key => $value) {
+            # code...
+            if ($value['d_k'] == 'Debet') {
+                $total += $value['nominal'];
+            }
+
+            if ($value['d_k'] == 'Kredit') {
+                $total -= $value['nominal'];
+            }
+
+        }
+
+        $porto ['Simpanan Lainnya'] = $total;
+
+
+        $sim_non = SimpananNonModalData::with('simpanan_non_modal_menu')->where('anggota_koperasi_id',$this->anggota_id)->get()->groupBy('menu_id');
+
+        foreach ($sim_non as $key2 => $value2) {
+            # code...
+            $total = 0;
+            $menu_id = 0;
+            foreach ($value2 as $key => $value) {
+                # code...
+                if ($value['d_k'] == 'Debet') {
+                    $total += $value['nominal'];
+                }
+
+                if ($value['d_k'] == 'Kredit') {
+                    $total -= $value['nominal'];
+                }
+
+                $menu_id = $value->menu_id;
+            }
+            $porto [$value->simpanan_non_modal_menu->nama_menu] = $total;
+
+        }
+
+        $data['porto'] = $porto;
 
         return view('livewire.anggota-koperasi-detail',$data);
     }
