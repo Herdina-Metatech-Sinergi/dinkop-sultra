@@ -62,7 +62,36 @@ class TransaksiUmumResource extends Resource
                 })
                 ->get()
                 ->pluck('title', 'kode_coa')
-            )->required()->searchable()->label('Transaksi'),
+            )->required()->searchable()->label('Transaksi')
+            ->createOptionForm([
+                Forms\Components\TextInput::make('title')->label('Nama COA')
+                    ->required(),
+                Forms\Components\Select::make('kategori')
+                    ->required()
+                    ->options(function (){
+                        $mc = MasterCoa::whereRaw('LENGTH(kode_coa) = 2')
+                            ->where(function ($query) {
+                                $query->where('kode_coa', 'like', '4%')
+                                    ->orWhere('kode_coa', 'like', '5%');
+                            })
+                            ->get()
+                            ->pluck('title', 'id');
+                        return $mc;
+                    }),
+            ])->createOptionUsing(function (array $data): int {
+                $mascoa = MasterCoa::with('children')->where('id',$data['kategori'])->first();
+                $mascoa_kode = $mascoa->children->max('kode_coa') + 1;
+
+                $mc_new = MasterCoa::create([
+                    'title' => $data['title'],
+                    'kelompok' => $data['title'],
+                    'kode_coa' => $mascoa_kode,
+                    'saldo_normal' => $mascoa->saldo_normal,
+                    'parent_id' => $mascoa->id
+                ]);
+
+                return $mc_new->id;
+            })->helperText('Silahkan refresh halaman bila sudah menambahkan data baru transaksi'),
                 Forms\Components\DatePicker::make('tanggal')
                     ->required(),
                 Forms\Components\TextInput::make('nominal')
