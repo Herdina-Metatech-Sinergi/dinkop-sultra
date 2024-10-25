@@ -287,6 +287,135 @@ class CetakController extends Controller
         ];
     }
 
+    public function laporanPerubahanModal(Request $request){
+        ini_set('memory_limit', '-1');
+
+        if (@$request->tgl_awal == null || @$request->tgl_awal == null || @$request->identitas_koperasi_id == null) {
+            # code...
+            dd('hayo ngapain');
+        }
+
+
+
+
+        $identitas = IdentitasKoperasi::where('id',$request->identitas_koperasi_id)->first();
+
+
+        $tanggal_awal = $request->tgl_awal;
+        $tanggal_akhir = $request->tgl_akhir;
+
+        $tanggal_awal2 = date('Y',strtotime($request->tgl_awal)).'-01-01';
+        $tanggal_akhir2 = date('Y-m-d',strtotime($tanggal_awal . "-1 days"));
+
+
+
+        $perhitungan_new = $this->perhitungan_perubahan_modal($tanggal_awal,$tanggal_akhir,$request->identitas_koperasi_id);
+        $perhitungan_lama = $this->perhitungan_perubahan_modal($tanggal_awal2,$tanggal_akhir2,$request->identitas_koperasi_id);
+
+        $first_data = array('perhitungan_new' => $perhitungan_new,'perhitungan_lama' => $perhitungan_lama);
+
+        $data['akuntansi'] = $first_data;
+
+        $data['identitas'] = $identitas;
+
+        $data['tgl_awal'] = $request->tgl_awal;
+        $data['tgl_akhir'] = $request->tgl_akhir;
+
+        return view('cetak.laporan-perubahan-modal',$data);
+    }
+
+    public function perhitungan_perubahan_modal($tanggal_awal,$tanggal_akhir,$identitas_koperasi_id){
+        $laporan_shu_rentang = [];
+        // kode 4
+
+        // ambil dari riwayat coa
+        for ($i=3; $i <= 3 ; $i++) {
+            # code...
+            $coas = MasterCoa::where('kode_coa','like',$i.'%')->get();
+
+            foreach ($coas as $key => $coa) {
+                # code...
+
+                $jurnal_umum_debet = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal,$tanggal_akhir])->where('d_k','debet')->get()->sum('nominal');
+
+                $nom_coa = 0;
+                // if ($riwayat_coa->saldo_normal == 'Debet') {
+                //     # code...
+                //     $nom_coa = round(@$riwayat_coa->nominal);
+                // }else{
+                //     $nom_coa = 0 - round(@$riwayat_coa->nominal);
+
+                // }
+
+
+                if (abs($nom_coa + round($jurnal_umum_debet ,2)) != 0) {
+                    # code...
+                    $laporan_shu [] = [
+                        'coa' => $i,
+                        'jenis' => 'kredit',
+                        'data' => $coa->toArray(),
+                        'nominal' => abs($nom_coa + round($jurnal_umum_debet ,2))
+                    ];
+                }
+
+            }
+
+        }
+
+        for ($i=3; $i <= 3 ; $i++) {
+            # code...
+            $coas = MasterCoa::where('kode_coa','like',$i.'%')->get();
+
+            foreach ($coas as $key => $coa) {
+                # code...
+
+                $jurnal_umum_kredit = JurnalUmum::where('akun',$coa->kode_coa)->where('identitas_koperasi_id',$identitas_koperasi_id)->whereBetween('tanggal',[$tanggal_awal,$tanggal_akhir])->where('d_k','kredit')->get()->sum('nominal');
+
+                $nom_coa = 0;
+                // if ($riwayat_coa->saldo_normal == 'kredit') {
+                //     # code...
+                //     $nom_coa = round(@$riwayat_coa->nominal);
+                // }else{
+                //     $nom_coa = 0 - round(@$riwayat_coa->nominal);
+
+                // }
+
+                if (abs($nom_coa + round($jurnal_umum_kredit ,2)) != 0) {
+                    # code...
+                    $laporan_shu [] = [
+                        'coa' => $i,
+                        'jenis' => 'debet',
+                        'data' => $coa->toArray(),
+                        'nominal' => abs($nom_coa + round($jurnal_umum_kredit ,2))
+                    ];
+                }
+
+            }
+
+        }
+
+        $laporan_shu_group = [];
+        $total_debet = 0;
+        $total_kredit = 0;
+
+        foreach ($laporan_shu as $item) {
+            $laporan_shu_group[$item['jenis']][] = $item;
+
+            // Hitung total debet dan kredit
+            if ($item['jenis'] == 'debet') {
+                $total_debet += $item['nominal'];
+            } elseif ($item['jenis'] == 'kredit') {
+                $total_kredit += $item['nominal'];
+            }
+        }
+
+        return [
+            'laporan_shu_group_new' => $laporan_shu_group,
+            'total_debet_new' => $total_debet,
+            'total_kredit_new' => $total_kredit,
+            'total' => $total_debet - $total_kredit,
+        ];
+    }
 
     public function laporanPosisiKeuangan(Request $request){
         ini_set('memory_limit', '-1');

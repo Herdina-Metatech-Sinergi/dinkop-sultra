@@ -107,7 +107,7 @@ class LaporanPerubahanModal extends Component implements HasForms
             $tgl_akhir = Carbon::parse($this->filters['tgl_akhir']);
 
 
-            $_url = '/admin/cetak/laporan-laba-rugi?tgl_awal=' . $tgl_awal->toDateString() . '&tgl_akhir=' . $tgl_akhir->toDateString() . '&identitas_koperasi_id=' . $this->filters['identitas_koperasi_id'];
+            $_url = '/admin/cetak/laporan-perubahan-modal?tgl_awal=' . $tgl_awal->toDateString() . '&tgl_akhir=' . $tgl_akhir->toDateString() . '&identitas_koperasi_id=' . $this->filters['identitas_koperasi_id'];
             return redirect($_url);
             // $this->dispatch('download-export', $_url);
         } catch (\Throwable $th) {
