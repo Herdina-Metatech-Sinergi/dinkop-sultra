@@ -10,6 +10,9 @@
                    link berikut.
                 </a>
             </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Status Koperasi : {{$data['identitas']->status}}
+
+            </p>
         </div>
         @endif
 
