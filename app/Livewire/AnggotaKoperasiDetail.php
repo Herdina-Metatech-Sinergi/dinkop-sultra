@@ -50,6 +50,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
     public $angsuran = [];
 
+    public $nom_admin = 0, $nom_cadangan = 0;
 
     public function mount($anggota_id){
         $this->anggota_id = $anggota_id;
@@ -633,11 +634,13 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                                 $admin = $state;
                                 $cadangan = $get('cadangan');
 
-                                if ($principal && $admin && $cadangan) {
+                                if ($principal && $admin ) {
                                     $nom_admin = $principal * $admin / 100;
                                     $nom_cadangan = $principal * $cadangan / 100;
                                     $nominal_bayar = $principal - $nom_admin - $nom_cadangan;
 
+                                    $this->nom_admin = $nom_admin;
+                                    $this->nom_cadangan = $nom_cadangan;
                                     $set('nominal_bayar', round($nominal_bayar, 2));
                                 }
                             }
@@ -659,6 +662,8 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                                 if ($principal && $admin ) {
                                     $nominal_bayar = $principal - $admin - ($principal * $cadangan / 100);
 
+                                    $this->nom_admin = $admin;
+                                    $this->nom_cadangan = ($principal * $cadangan / 100);
                                     $set('nominal_bayar', round($nominal_bayar, 2));
                                 }
                             }
@@ -682,6 +687,14 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                                     ? $principal - ($principal * $admin / 100) - ($principal * $cadangan / 100)
                                     : $principal - $admin - ($principal * $cadangan / 100);
 
+                                    if ($get('jenis_administrasi') === 'persen') {
+                                        # code...
+                                        $this->nom_admin = ($principal * $admin / 100);
+                                        $this->nom_cadangan = ($principal * $cadangan / 100);
+                                    }else{
+                                        $this->nom_admin = $admin;
+                                        $this->nom_cadangan = ($principal * $cadangan / 100);
+                                    }
                                 $set('nominal_bayar', round($nominal_bayar, 2));
                             }
                         }),
@@ -823,7 +836,12 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         }
 
         $controller = new Controller();
+
+        // untuk pinjam
         $controller->jurnal_umum('Pinjam', $data['nominal_pinjaman'], $this->anggota_id, null, null, $simpok->created_at);
+
+        $controller->jurnal_umum('Pinjam Administrasi', $this->nom_admin, $this->anggota_id, null, null, $simpok->created_at);
+        $controller->jurnal_umum('Pinjam Cadangan Risiko', $this->nom_cadangan, $this->anggota_id, null, null, $simpok->created_at);
 
         // Reset form
         $this->kredit_id = null;

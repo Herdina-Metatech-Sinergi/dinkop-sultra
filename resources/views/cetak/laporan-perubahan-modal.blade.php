@@ -72,7 +72,7 @@
                     </td>
 
                 </tr>
-                @foreach ($akuntansi['perhitungan_new']['laporan_shu_group_new']['debet'] as $key => $item)
+                @foreach ($akuntansi['perhitungan_new']['laporan_shu_group_new']['debet'] ?? [] as $key => $item)
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">
@@ -110,7 +110,7 @@
                     </td>
 
                 </tr>
-                @foreach ($akuntansi['perhitungan_new']['laporan_shu_group_new']['kredit'] as $key => $item)
+                @foreach ($akuntansi['perhitungan_new']['laporan_shu_group_new']['kredit'] ?? [] as $key => $item)
                 @if ($item['nominal'] != 0)
                 <tr>
                     <td style="text-align: left;border-right: 1px solid black;">

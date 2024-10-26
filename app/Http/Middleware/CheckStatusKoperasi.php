@@ -43,6 +43,21 @@ class CheckStatusKoperasi
                 return $next($request);
             }
 
+            if (str_contains($request->getPathInfo(),'/admin/logout')) {
+                # code...
+                return $next($request);
+            }
+
+            if (str_contains($request->getPathInfo(),'/admin/my-profile')) {
+                # code...
+                return $next($request);
+            }
+
+            if (str_contains($request->getPathInfo(),'/admin/themes')) {
+                # code...
+                return $next($request);
+            }
+
             return redirect('admin');
         } catch (\Throwable $th) {
             //throw $th;

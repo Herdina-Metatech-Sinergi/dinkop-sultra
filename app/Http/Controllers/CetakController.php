@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnggotaKoperasi;
 use App\Models\IdentitasKoperasi;
 use App\Models\JurnalUmum;
 use App\Models\MasterCoa;
@@ -139,6 +140,15 @@ class CetakController extends Controller
         }
 
         usort($data_baru, fn($a, $b) => $a['tanggal'] <=> $b['tanggal']);
+
+
+        foreach ($data_baru as $key => $value) {
+            # code...
+            $jurnal = explode("#",$value['jurnal']);
+
+            $anggota = AnggotaKoperasi::where('id',$jurnal[4])->first();
+            $data_baru[$key]['deskripsi'] = $data_baru[$key]['deskripsi'].' | '.($anggota->nama ?? '');
+        }
 
         $data['identitas'] = $identitas;
         $data['total_lama'] =  $total;
@@ -328,6 +338,7 @@ class CetakController extends Controller
         $laporan_shu_rentang = [];
         // kode 4
 
+        $laporan_shu = [];
         // ambil dari riwayat coa
         for ($i=3; $i <= 3 ; $i++) {
             # code...

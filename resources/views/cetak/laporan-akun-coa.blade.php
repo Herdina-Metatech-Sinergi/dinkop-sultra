@@ -51,8 +51,8 @@
             <thead>
                 <tr>
                     <th style="border: 1px solid black;">Tanggal</th>
-                    <th style="border: 1px solid black;">Jurnal</th>
                     <th style="border: 1px solid black;">Deskripsi</th>
+                    <th style="border: 1px solid black;">Jurnal</th>
                     <th style="border: 1px solid black;">Debet</th>
                     <th style="border: 1px solid black;">Kredit</th>
                     <th style="border: 1px solid black;">Saldo</th>
@@ -96,10 +96,6 @@
                             {{$t4['tanggal']}}
                         </td>
                         <td style="border: 1px solid black;">
-                            {{-- <a href="{{url('koperasi/jurnal_umum/tambah?jurnal=').\Crypt::encrypt($t4['jurnal'])}}" target="__blank">{{$t4['jurnal']}}</a> --}}
-                            {{$t4['jurnal']}}
-                        </td>
-                        <td style="border: 1px solid black;">
                             @if ($t4['deskripsi'] == '')
                                 Jurnal Manual
                             @else
@@ -107,6 +103,11 @@
 
                             @endif
                         </td>
+                        <td style="border: 1px solid black;">
+                            {{-- <a href="{{url('koperasi/jurnal_umum/tambah?jurnal=').\Crypt::encrypt($t4['jurnal'])}}" target="__blank">{{$t4['jurnal']}}</a> --}}
+                            {{$t4['jurnal']}}
+                        </td>
+
 
                         <td style="text-align: right;border: 1px solid black;">
 
