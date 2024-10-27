@@ -45,7 +45,7 @@ class Controller extends BaseController
             $identitas_koperasi_id =  $anggota->identitas_koperasi_id;
         }
 
-        $jurnal =  date('YmdHis', strtotime($date)) .'#'.($kon[0]->id??'0'). '#' . $identitas_koperasi_id . '#' . auth()->user()->id.'#'.($anggota->id ?? 0);
+        $jurnal =  date('YmdHis', strtotime($date)) .'#'.($kon[0]->id??'0'). '#' . $identitas_koperasi_id . '#' . (auth()->user()->id ?? 1).'#'.($anggota->id ?? 0);
 
         if ($hapus) {
             # code...
@@ -69,7 +69,7 @@ class Controller extends BaseController
                 'akun' => $key->akun,
                 'd_k' => $key->d_k,
                 'nominal' => $nom,
-                'user_id' => auth()->user()->id,
+                'user_id' => auth()->user()->id ?? 1,
                 'jurnal' => $jurnal_kode ?? $jurnal,
                 'identitas_koperasi_id' => $identitas_koperasi_id
             ]);

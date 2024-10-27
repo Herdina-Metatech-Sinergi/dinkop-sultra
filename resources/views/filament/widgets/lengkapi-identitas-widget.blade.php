@@ -10,7 +10,20 @@
                    link berikut.
                 </a>
             </p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Status Koperasi : {{$data['identitas']->status}}
+            <p><br></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Status Koperasi : @if (@$data['identitas']->status == 'Menunggu')
+                {{-- <x-badge color="warning"> --}}
+                    Menunggu Verifikasi
+                {{-- </x-badge> --}}
+            @elseif (@$data['identitas']->status == 'Setujui')
+                {{-- <x-badge color="success"> --}}
+                    Verifikasi Disetujui
+                {{-- </x-badge> --}}
+            @else
+                {{-- <x-badge color="danger"> --}}
+                    Verifikasi Ditolak
+                {{-- </x-badge> --}}
+            @endif
 
             </p>
         </div>

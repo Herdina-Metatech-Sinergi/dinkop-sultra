@@ -27,7 +27,8 @@ return new class extends Migration
     {
         Schema::table('kredits', function (Blueprint $table) {
             //
-            $table->dropColumn('administrasi');
+            $table->dropColumn('administrasi_persen');
+            $table->dropColumn('administrasi_rupiah');
             $table->dropColumn('cadangan');
             $table->dropColumn('nominal_bayar');
         });

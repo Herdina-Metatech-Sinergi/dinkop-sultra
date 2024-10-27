@@ -38,7 +38,7 @@ class CreateTransaksiUmum extends CreateRecord
                 'akun' => $key2->kode_coa,
             ],[
                 'tanggal' => $date,
-                'deskripsi' => $key2->title,
+                'deskripsi' => $record->deskripsi,
                 'akun' => $key2->kode_coa,
                 'd_k' => 'debet',
                 'nominal' => $record->nominal,
@@ -52,7 +52,7 @@ class CreateTransaksiUmum extends CreateRecord
                 'akun' => $key->kode_coa,
             ],[
                 'tanggal' => $date,
-                'deskripsi' => $key->title.' '.$record->deskripsi,
+                'deskripsi' => $record->deskripsi,
                 'akun' => $key->kode_coa,
                 'd_k' => strtolower($key->saldo_normal),
                 'nominal' => $record->nominal,
@@ -68,7 +68,7 @@ class CreateTransaksiUmum extends CreateRecord
                 'akun' => $key->kode_coa,
             ],[
                 'tanggal' => $date,
-                'deskripsi' => $key->title.' '.$record->deskripsi,
+                'deskripsi' => $record->deskripsi,
                 'akun' => $key->kode_coa,
                 'd_k' => strtolower($key->saldo_normal),
                 'nominal' => $record->nominal,
@@ -84,7 +84,7 @@ class CreateTransaksiUmum extends CreateRecord
                 'akun' => $key2->kode_coa,
             ],[
                 'tanggal' => $date,
-                'deskripsi' => $key2->title,
+                'deskripsi' => $record->deskripsi,
                 'akun' => $key2->kode_coa,
                 'd_k' => 'kredit',
                 'nominal' => $record->nominal,

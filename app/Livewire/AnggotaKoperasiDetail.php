@@ -23,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -153,9 +154,9 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
 
-            $controller->jurnal_umum('Bayar Simpanan Non Modal',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Non Modal',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
         }else{
-            $controller->jurnal_umum('Bayar Simpanan Non Modal Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }
         $this->simpok_id = null;
@@ -202,7 +203,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
 
-            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
         }
         $this->simpok_id = null;
         $this->simwa_id = null;
@@ -246,7 +247,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Kredit') {
 
-            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Non Modal Bunga Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
         }
         $this->simpok_id = null;
         $this->simwa_id = null;
@@ -289,11 +290,17 @@ class AnggotaKoperasiDetail extends Component implements HasForms
                         ->content(function (callable $get) {
                             return $this->anggota['no_anggota'] ?? '-';
                         }),
-                    Placeholder::make('anggota.nama')
+                    Select::make('anggota.nama')
                         ->label('Nama')
-                        ->content(function (callable $get) {
-                            return $this->anggota['nama'] ?? '-';
-                        }),
+                        ->options(AnggotaKoperasi::where('identitas_koperasi_id', $this->anggota->identitas_koperasi_id)->get()->pluck('nama','id'))->searchable()
+                        ->afterStateUpdated(function (Get $get) {
+                            return redirect('admin/anggota-koperasis/'.$get('anggota.nama').'/edit');
+                        })->reactive()->default($this->anggota_id),
+                    // Placeholder::make('anggota.nama')
+                    //     ->label('Nama')
+                    //     ->content(function (callable $get) {
+                    //         return $this->anggota['nama'] ?? '-';
+                    //     }),
                     Placeholder::make('anggota.alamat')
                         ->label('Alamat')
                         ->content(function (callable $get) {
@@ -838,10 +845,10 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
 
         // untuk pinjam
-        $controller->jurnal_umum('Pinjam', $data['nominal_pinjaman'], $this->anggota_id, null, null, $simpok->created_at);
+        $controller->jurnal_umum('Pinjam', $data['nominal_pinjaman'], $this->anggota_id, null, null, $simpok->tanggal);
 
-        $controller->jurnal_umum('Pinjam Administrasi', $this->nom_admin, $this->anggota_id, null, null, $simpok->created_at);
-        $controller->jurnal_umum('Pinjam Cadangan Risiko', $this->nom_cadangan, $this->anggota_id, null, null, $simpok->created_at);
+        $controller->jurnal_umum('Pinjam Administrasi', $this->nom_admin, $this->anggota_id, null, null, $simpok->tanggal);
+        $controller->jurnal_umum('Pinjam Cadangan Risiko', $this->nom_cadangan, $this->anggota_id, null, null, $simpok->tanggal);
 
         // Reset form
         $this->kredit_id = null;
@@ -912,10 +919,10 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
             # code...
-            $controller->jurnal_umum('Bayar Simpanan Pokok',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Pokok',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }else{
-            $controller->jurnal_umum('Bayar Simpanan Pokok Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Pokok Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }
 
@@ -960,10 +967,10 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
             # code...
-            $controller->jurnal_umum('Bayar Simpanan Lainnya',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Lainnya',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }else{
-            $controller->jurnal_umum('Bayar Simpanan Lainnya Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Lainnya Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }
 
@@ -1021,7 +1028,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = Kredit::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Pinjam', $simpok->nominal_pinjaman,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Pinjam', $simpok->nominal_pinjaman,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -1032,7 +1039,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = SimpananPokokAnggota::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Bayar Simpanan Pokok',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Bayar Simpanan Pokok',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -1043,7 +1050,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = SimpananLainnyaAnggota::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Bayar Simpanan Lainnya',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Bayar Simpanan Lainnya',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -1073,9 +1080,9 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
-            $controller->jurnal_umum('Bayar Simpanan Wajib',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Wajib',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
         }else{
-            $controller->jurnal_umum('Bayar Simpanan Wajib Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Simpanan Wajib Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }
 
@@ -1106,7 +1113,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = SimpananWajibAnggota::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Bayar Simpanan Wajib',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Bayar Simpanan Wajib',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -1131,9 +1138,9 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $controller = new Controller();
         if ($data['d_k'] == 'Debet') {
 
-            $controller->jurnal_umum('Bayar Setoran Sukarela',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Setoran Sukarela',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
         }else{
-            $controller->jurnal_umum('Bayar Setoran Sukarela Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->created_at);
+            $controller->jurnal_umum('Bayar Setoran Sukarela Tarik',$data['nominal'],$this->anggota_id,null,null,$simpok->tanggal);
 
         }
         $this->simpok_id = null;
@@ -1163,7 +1170,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $simpok = SimpananSukarelaAnggota::where('id',$id)->first();
 
         $controller = new Controller();
-        $controller->jurnal_umum('Bayar Simpanan Non Modal',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->created_at,true);
+        $controller->jurnal_umum('Bayar Simpanan Non Modal',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
 
         $simpok->delete();
         return Notification::make()->title('Berhasil dihapus!')->success()->send();
@@ -1197,10 +1204,16 @@ class AnggotaKoperasiDetail extends Component implements HasForms
 
         if ($value !== null) {
             // Lakukan penyimpanan ke database
-            KreditAngsuran::where('id', $id)->update([$field => $value]);
+            try {
+                //code...
+                KreditAngsuran::where('id', $id)->update([$field => $value]);
 
-            // Flash message atau notifikasi jika diperlukan
-            return Notification::make()->title('Data berhasil diupdate!')->success()->send();
+                // Flash message atau notifikasi jika diperlukan
+                return Notification::make()->title('Data berhasil diupdate!')->success()->send();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+
         }
     }
 
