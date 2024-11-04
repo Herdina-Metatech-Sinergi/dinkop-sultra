@@ -751,4 +751,19 @@ class CetakController extends Controller
 
         return view('cetak.laporan-calk',$data);
     }
+
+    public function saldoAnggota(Request $request){
+        ini_set('memory_limit', '-1');
+
+
+
+        $identitas = IdentitasKoperasi::where('id',$request->identitas_koperasi_id)->first();
+
+        $data['identitas'] = $identitas;
+        $data['anggota'] = session('saldo-anggota');
+
+
+        // dd($data);
+        return view('cetak.saldo-anggota',$data);
+    }
 }

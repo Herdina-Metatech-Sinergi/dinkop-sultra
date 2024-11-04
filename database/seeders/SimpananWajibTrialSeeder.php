@@ -25,8 +25,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -39,8 +39,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -53,8 +53,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -68,8 +68,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -82,8 +82,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -96,8 +96,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -110,8 +110,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -124,8 +124,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -139,8 +139,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 
@@ -153,8 +153,8 @@ class SimpananWajibTrialSeeder extends Seeder
             $data = [
                 'tanggal' => $tgl,
                 'nominal' => $nominal,
-                'd_k' => 'Kredit',
-                'deskripsi' => 'Keluar dari Anggota Koperasi',
+                'd_k' => 'Debet',
+                'deskripsi' => 'Simpanan Wajib',
                 'anggota_koperasi_id' => $value->id
             ];
 

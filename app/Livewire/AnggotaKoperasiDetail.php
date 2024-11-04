@@ -322,6 +322,13 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         $tgl = date('Y-m-d');
         $anggota_id = $this->anggota_id;
 
+        $anggota = AnggotaKoperasi::where('id',$anggota_id)->first();
+        if ($anggota->tgl_keluar != '') {
+            # code...
+            return Notification::make()->title('Gagal, anggota telah keluar pada '.$anggota->tgl_keluar)->danger()->send();
+
+        }
+
         // cek pinjaman dia dulu
         $kredit = Kredit::with('kredit_angsuran')->where('anggota_koperasi_id',$anggota_id)->get();
 

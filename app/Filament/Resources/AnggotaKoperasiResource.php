@@ -79,7 +79,7 @@ class AnggotaKoperasiResource extends Resource
                         'Perempuan' => 'Perempuan',
                     ])->required(),
                 Forms\Components\DatePicker::make('tgl_masuk'),
-                Forms\Components\DatePicker::make('tgl_keluar'),
+                Forms\Components\DatePicker::make('tgl_keluar')->disabled(),
             ]);
     }
 
