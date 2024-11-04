@@ -257,7 +257,7 @@
 
                         <tr>
                             <td>
-                                <b>T O T A L</b>
+                                <b>TOTAL ASET</b>
                             </td>
                             <td style="text-align: right; font-weight: bold">
                                 {{ App\Http\Controllers\Controller::rupiah(@$akuntansi['final_total']['aset']) }}
@@ -543,7 +543,7 @@
 
                         <tr>
                             <td>
-                                <b>T O T A L</b>
+                                <b>TOTAL LIABILITAS DAN EKUITAS</b>
                             </td>
                             <td style="text-align: right; font-weight: bold">
 
