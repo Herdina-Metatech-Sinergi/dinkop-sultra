@@ -24,19 +24,19 @@
             <x-table-sm.table-th customClass='text-center'>
                 Nama
             </x-table-sm.table-th>
-
-
             <x-table-sm.table-th customClass='text-center'>
-                Simpanan Pokok
+                Kredit Flat Belum Lunas
+            </x-table-sm.table-th>
+            <x-table-sm.table-th customClass='text-center'>
+                Kredit Flat Lunas
+            </x-table-sm.table-th>
+            <x-table-sm.table-th customClass='text-center'>
+                Kredit Konvensional Belum Lunas
+            </x-table-sm.table-th>
+            <x-table-sm.table-th customClass='text-center'>
+                Kredit Konvensional Lunas
             </x-table-sm.table-th>
 
-            <x-table-sm.table-th customClass='text-center'>
-                Simpanan Wajib
-            </x-table-sm.table-th>
-
-            <x-table-sm.table-th customClass='text-center'>
-                Simpanan Lainnya
-            </x-table-sm.table-th>
 
         </x-slot:th>
 
@@ -51,16 +51,19 @@
                     <x-table-sm.table-td>
                         {{ @$data2['nama'] }}
                     </x-table-sm.table-td>
+                    <x-table-sm.table-td>
+                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Kredit Flat Belum Lunas']) }}
+                    </x-table-sm.table-td>
+                    <x-table-sm.table-td>
+                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Kredit Flat Lunas']) }}
+                    </x-table-sm.table-td>
+                    <x-table-sm.table-td>
+                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Kredit Konvensional Belum Lunas']) }}
+                    </x-table-sm.table-td>
+                    <x-table-sm.table-td>
+                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Kredit Konvensional Lunas']) }}
+                    </x-table-sm.table-td>
 
-                    <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Pokok']) }}
-                    </x-table-sm.table-td>
-                    <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Wajib']) }}
-                    </x-table-sm.table-td>
-                    <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Lainnya']) }}
-                    </x-table-sm.table-td>
 
 
                 </x-table-sm.table-tr>

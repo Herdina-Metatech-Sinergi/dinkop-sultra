@@ -141,6 +141,10 @@ class IdentitasKoperasiResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_pengurus')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('nama_sekretaris')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('nama_bendahara')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nama_pengawas')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('telp_fax_email')

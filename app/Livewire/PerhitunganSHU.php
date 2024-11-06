@@ -7,6 +7,7 @@ use App\Models\AnggotaKoperasi;
 use App\Models\IdentitasKoperasi;
 use App\Models\KreditAngsuran;
 use App\Models\KreditKonvensionalAngsuran;
+use App\Models\MasterBagianSHU;
 use App\Models\SimpananPokokAnggota;
 use App\Models\SimpananWajibAnggota;
 use Filament\Forms\Components\Grid;
@@ -25,9 +26,8 @@ class PerhitunganSHU extends Component implements HasForms
 
     public $filters = [
         'bagian_anggota' => null,
-        'transaksaksi' => null,
+        'transaksi' => null,
         'simpanan' => null,
-        'bagian_anggota' => null,
         'tgl_awal' => null,
         'tgl_akhir' => null,
         'identitas_koperasi_id' => null,
@@ -53,6 +53,16 @@ class PerhitunganSHU extends Component implements HasForms
         $this->filters['identitas_koperasi_id']  = $firstOption;
         $this->filters['tgl_awal']  = date('Y').'-01-01';
         $this->filters['tgl_akhir']  = date('Y-m-d');
+
+        $mbs = MasterBagianSHU::where('identitas_koperasi_id',$firstOption)->first();
+
+        if ($mbs) {
+            # code...
+            $this->filters['bagian_anggota']  = $mbs->shu_bagian_anggota;
+            $this->filters['simpanan']  = $mbs->shu_untuk_simpanan;
+            $this->filters['transaksi']  = $mbs->shu_untuk_transaksi;
+
+        }
     }
 
     public function getFilterFormSchema(Form $form): Form

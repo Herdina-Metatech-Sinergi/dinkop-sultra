@@ -766,4 +766,19 @@ class CetakController extends Controller
         // dd($data);
         return view('cetak.saldo-anggota',$data);
     }
+
+    public function piutangAnggota(Request $request){
+        ini_set('memory_limit', '-1');
+
+
+
+        $identitas = IdentitasKoperasi::where('id',$request->identitas_koperasi_id)->first();
+
+        $data['identitas'] = $identitas;
+        $data['anggota'] = session('piutang-anggota');
+
+
+        // dd($data);
+        return view('cetak.piutang-anggota',$data);
+    }
 }
