@@ -1174,7 +1174,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
     }
 
     public function goHapusItemSimpananSukarela($id){
-        $simpok = SimpananSukarelaAnggota::where('id',$id)->first();
+        $simpok = SimpananNonModalData::where('id',$id)->first();
 
         $controller = new Controller();
         $controller->jurnal_umum('Bayar Simpanan Non Modal',$simpok->nominal,$simpok->anggota_koperasi_id,null,null,$simpok->tanggal,true);
