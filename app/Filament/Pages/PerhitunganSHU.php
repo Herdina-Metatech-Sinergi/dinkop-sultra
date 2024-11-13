@@ -10,6 +10,6 @@ class PerhitunganSHU extends Page
 
     protected static string $view = 'filament.pages.perhitungan-s-h-u';
 
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Laporan';
 
 }

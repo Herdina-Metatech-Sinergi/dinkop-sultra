@@ -13,7 +13,7 @@ class LaporanCALK extends Page
     protected static ?string $navigationGroup = 'Laporan';
 
     protected static ?string $navigationLabel = 'Laporan CALK';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
 
 

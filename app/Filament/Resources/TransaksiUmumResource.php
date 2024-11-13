@@ -22,7 +22,7 @@ class TransaksiUmumResource extends Resource
     protected static ?string $model = TransaksiUmum::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Koperasi';
+    protected static ?string $navigationGroup = 'Input Data';
 
 
     public static function form(Form $form): Form

@@ -26,17 +26,14 @@
             </x-table-sm.table-th>
 
 
+            @foreach ($menu as $men)
             <x-table-sm.table-th customClass='text-center'>
-                Simpanan Pokok
+                {{$men}}
             </x-table-sm.table-th>
+            @endforeach
 
-            <x-table-sm.table-th customClass='text-center'>
-                Simpanan Wajib
-            </x-table-sm.table-th>
 
-            <x-table-sm.table-th customClass='text-center'>
-                Simpanan Lainnya
-            </x-table-sm.table-th>
+
 
         </x-slot:th>
 
@@ -52,15 +49,11 @@
                         {{ @$data2['nama'] }}
                     </x-table-sm.table-td>
 
+                    @foreach ($menu as $men)
                     <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Pokok']) }}
+                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto[$men]) }}
                     </x-table-sm.table-td>
-                    <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Wajib']) }}
-                    </x-table-sm.table-td>
-                    <x-table-sm.table-td>
-                        {{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Lainnya']) }}
-                    </x-table-sm.table-td>
+                    @endforeach
 
 
                 </x-table-sm.table-tr>

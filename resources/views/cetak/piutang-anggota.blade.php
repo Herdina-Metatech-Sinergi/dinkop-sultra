@@ -23,16 +23,8 @@
 <body>
 
     <div class="container">
-        <table class='table borderless'>
-            <tr>
+        @include('cetak.header')
 
-                <td style="text-align: center">
-                    <p style="margin-bottom: 0px; font-size: 18px;">{{$identitas['nama_koperasi']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['alamat']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">Telepon {{$identitas['telp_fax_email']}}</p>
-                </td>
-            </tr>
-        </table>
         <hr>
         <p style="margin-bottom: 4px; text-align: center;">Piutang Anggota</p>
         {{-- <p style="margin-top: 0px; text-align: center;">{{$periode}}</p> --}}
@@ -68,17 +60,8 @@
         </table>
 
         <p><br><br></p>
-        <table class='table borderless'>
-            <tr>
+        @include('cetak.footer')
 
-                <td style="text-align: right">
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['kabupaten_kota']}}, {{date('d-m-Y')}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">Pengurus</p>
-                    <p><br><br><br></p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['nama_pengurus']}}</p>
-                </td>
-            </tr>
-        </table>
     </div>
 
 </body>

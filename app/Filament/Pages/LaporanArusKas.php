@@ -12,8 +12,5 @@ class LaporanArusKas extends Page
 
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan Arus Kas';
-    protected static ?int $navigationSort = 1;
-
-
-
+    protected static ?int $navigationSort = 2;
 }

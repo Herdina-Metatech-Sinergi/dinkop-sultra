@@ -1,4 +1,4 @@
 <x-filament-panels::page>
-    @livewire('laporan-arus-kas')
+    @livewire('laporan-akun')
 
 </x-filament-panels::page>

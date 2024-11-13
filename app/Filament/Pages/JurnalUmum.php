@@ -12,7 +12,7 @@ class JurnalUmum extends Page
 
     protected static ?string $title = 'Jurnal Umum';
 
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Input Data';
 
 
 }

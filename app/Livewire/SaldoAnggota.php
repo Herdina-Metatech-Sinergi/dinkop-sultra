@@ -16,6 +16,7 @@ class SaldoAnggota extends Component
 {
     public $identitas_koperasi;
     public $anggota;
+    public $menu;
 
     public function mount(){
         if (auth()->user()->hasRole('Admin Dinkop')) {
@@ -32,6 +33,7 @@ class SaldoAnggota extends Component
     public function downloadPDF(){
         $anggota = AnggotaKoperasi::where('identitas_koperasi_id',$this->identitas_koperasi)->get();
 
+        $nama_menu = [];
         foreach ($anggota as $an => $ang) {
             # code...
             $data['simpanan_pokok'] = SimpananPokokAnggota::where('anggota_koperasi_id',$ang->id)->get();
@@ -51,72 +53,7 @@ class SaldoAnggota extends Component
             // hitung
             $porto = [];
 
-            $lunas = 0;
-            $belum_lunas = 0;
-            foreach ($data['kredit'] as $key => $value) {
-                # code...
-                foreach ($value->kredit_angsuran as $key2 => $value2) {
-                    # code...
-                    if ($value2->status_pokok == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->nominal_pokok;
-                    }
 
-                    if ($value2->status_bunga == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->nominal_bunga;
-                    }
-
-                    if ($value2->status_pokok == 'Lunas') {
-                        # code...
-                        $lunas += $value2->nominal_pokok;
-                    }
-
-                    if ($value2->status_bunga == 'Lunas') {
-                        # code...
-                        $lunas += $value2->nominal_bunga;
-                    }
-
-
-                }
-            }
-
-            $porto ['Kredit Flat Belum Lunas'] = $belum_lunas;
-            $porto ['Kredit Flat Lunas'] = $lunas;
-
-            $lunas = 0;
-            $belum_lunas = 0;
-            foreach ($data['kredit_konvensional'] as $key => $value) {
-                # code...
-                foreach ($value->kredit_konvensional_angsuran as $key2 => $value2) {
-                    # code...
-                    if ($value2->status_pokok == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->angsuran_pokok;
-
-                    }
-
-                    if ($value2->status_bunga == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->angsuran_bunga;
-                        continue;
-                    }
-
-                    if ($value2->status_pokok == 'Lunas') {
-                        # code...
-                        $lunas += $value2->angsuran_pokok;
-
-                    }
-
-                    if ($value2->status_bunga == 'Lunas') {
-                        # code...
-                        $lunas += $value2->angsuran_bunga;
-                        continue;
-                    }
-                }
-            }
-            $porto ['Kredit Konvensional Belum Lunas'] = $belum_lunas;
-            $porto ['Kredit Konvensional Lunas'] = $lunas;
 
             $total = 0;
             foreach ($data['simpanan_pokok'] as $key => $value) {
@@ -188,7 +125,18 @@ class SaldoAnggota extends Component
 
             $anggota[$an]->porto = $porto;
         }
+
+        // untuk nama menu
+        foreach ($anggota as $key => $value) {
+            # code...
+            foreach ($value->porto as $key2 => $value2) {
+                # code...
+                $nama_menu [] = $key2;
+            }
+        }
+
         session(['saldo-anggota' => $anggota]);
+        session(['saldo-anggota-menu' => array_unique($nama_menu)]);
 
         $_url = '/admin/cetak/saldo-anggota?identitas_koperasi_id='.$this->identitas_koperasi;
             return redirect($_url);
@@ -198,6 +146,7 @@ class SaldoAnggota extends Component
     {
         $anggota = AnggotaKoperasi::where('identitas_koperasi_id',$this->identitas_koperasi)->get();
 
+        $nama_menu = [];
         foreach ($anggota as $an => $ang) {
             # code...
             $data['simpanan_pokok'] = SimpananPokokAnggota::where('anggota_koperasi_id',$ang->id)->get();
@@ -216,73 +165,6 @@ class SaldoAnggota extends Component
 
             // hitung
             $porto = [];
-
-            $lunas = 0;
-            $belum_lunas = 0;
-            foreach ($data['kredit'] as $key => $value) {
-                # code...
-                foreach ($value->kredit_angsuran as $key2 => $value2) {
-                    # code...
-                    if ($value2->status_pokok == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->nominal_pokok;
-                    }
-
-                    if ($value2->status_bunga == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->nominal_bunga;
-                    }
-
-                    if ($value2->status_pokok == 'Lunas') {
-                        # code...
-                        $lunas += $value2->nominal_pokok;
-                    }
-
-                    if ($value2->status_bunga == 'Lunas') {
-                        # code...
-                        $lunas += $value2->nominal_bunga;
-                    }
-
-
-                }
-            }
-
-            $porto ['Kredit Flat Belum Lunas'] = $belum_lunas;
-            $porto ['Kredit Flat Lunas'] = $lunas;
-
-            $lunas = 0;
-            $belum_lunas = 0;
-            foreach ($data['kredit_konvensional'] as $key => $value) {
-                # code...
-                foreach ($value->kredit_konvensional_angsuran as $key2 => $value2) {
-                    # code...
-                    if ($value2->status_pokok == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->angsuran_pokok;
-
-                    }
-
-                    if ($value2->status_bunga == 'Belum Lunas') {
-                        # code...
-                        $belum_lunas += $value2->angsuran_bunga;
-                        continue;
-                    }
-
-                    if ($value2->status_pokok == 'Lunas') {
-                        # code...
-                        $lunas += $value2->angsuran_pokok;
-
-                    }
-
-                    if ($value2->status_bunga == 'Lunas') {
-                        # code...
-                        $lunas += $value2->angsuran_bunga;
-                        continue;
-                    }
-                }
-            }
-            $porto ['Kredit Konvensional Belum Lunas'] = $belum_lunas;
-            $porto ['Kredit Konvensional Lunas'] = $lunas;
 
             $total = 0;
             foreach ($data['simpanan_pokok'] as $key => $value) {
@@ -349,13 +231,23 @@ class SaldoAnggota extends Component
                     $menu_id = $value->menu_id;
                 }
                 $porto [$value->simpanan_non_modal_menu->nama_menu] = $total;
-
             }
 
             $anggota[$an]->porto = $porto;
         }
+
+        // untuk nama menu
+        foreach ($anggota as $key => $value) {
+            # code...
+            foreach ($value->porto as $key2 => $value2) {
+                # code...
+                $nama_menu [] = $key2;
+            }
+        }
         $data['anggota'] = $anggota;
+        $data['menu'] = array_unique($nama_menu);
         $this->anggota = $anggota;
+        $this->menu = array_unique($nama_menu);
         return view('livewire.saldo-anggota',$data);
     }
 }

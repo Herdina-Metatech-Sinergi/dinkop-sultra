@@ -12,7 +12,7 @@ class KonfigurasiCOA extends Page
 
     protected static ?string $title = 'Konfigurasi COA';
 
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'Master Data';
 
     public function mount(): void
     {

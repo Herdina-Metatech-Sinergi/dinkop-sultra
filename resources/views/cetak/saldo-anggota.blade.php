@@ -23,16 +23,7 @@
 <body>
 
     <div class="container">
-        <table class='table borderless'>
-            <tr>
-
-                <td style="text-align: center">
-                    <p style="margin-bottom: 0px; font-size: 18px;">{{$identitas['nama_koperasi']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['alamat']}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">Telepon {{$identitas['telp_fax_email']}}</p>
-                </td>
-            </tr>
-        </table>
+        @include('cetak.header')
         <hr>
         <p style="margin-bottom: 4px; text-align: center;">Simpanan Anggota</p>
         {{-- <p style="margin-top: 0px; text-align: center;">{{$periode}}</p> --}}
@@ -44,9 +35,11 @@
                     <th>No Anggota</th>
                     <th>Nama</th>
 
-                    <th>Simpanan Pokok</th>
-                    <th>Simpanan Wajib</th>
-                    <th>Simpanan Lainnya</th>
+                    @foreach ($menu as $men)
+                    <th customClass='text-center'>
+                        {{$men}}
+                    </th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
@@ -55,9 +48,11 @@
                         <td>{{ @$data2['no_anggota'] }}</td>
                         <td>{{ @$data2['nama'] }}</td>
 
-                        <td>{{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Pokok']) }}</td>
-                        <td>{{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Wajib']) }}</td>
-                        <td>{{ App\Http\Controllers\Controller::rupiah(@$data2->porto['Simpanan Lainnya']) }}</td>
+                        @foreach ($menu as $men)
+                        <td>
+                            {{ App\Http\Controllers\Controller::rupiah(@$data2->porto[$men]) }}
+                        </td>
+                        @endforeach
                     </tr>
                 @empty
                     <tr>
@@ -68,17 +63,8 @@
         </table>
 
         <p><br><br></p>
-        <table class='table borderless'>
-            <tr>
 
-                <td style="text-align: right">
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['kabupaten_kota']}}, {{date('d-m-Y')}}</p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">Pengurus</p>
-                    <p><br><br><br></p>
-                    <p style="margin-bottom: 0px; font-size: 14px;">{{$identitas['nama_pengurus']}}</p>
-                </td>
-            </tr>
-        </table>
+        @include('cetak.footer')
     </div>
 
 </body>

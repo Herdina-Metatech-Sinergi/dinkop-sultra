@@ -19,7 +19,9 @@ class IdentitasKoperasiResource extends Resource
     protected static ?string $model = IdentitasKoperasi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Koperasi';
+    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationLabel = 'Koperasi';
+
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -57,6 +59,10 @@ class IdentitasKoperasiResource extends Resource
                 Forms\Components\TextInput::make('provinsi')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nama_pengurus')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('nama_sekretaris')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('nama_bendahara')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nama_pengawas')
                     ->maxLength(255),

@@ -35,6 +35,8 @@ Route::get('admin/cetak/laporan-akun/coa/{coa}/cetak', [CetakController::class,'
 Route::get('admin/cetak/laporan-laba-rugi', [CetakController::class,'laporanLabaRugi']);
 Route::get('admin/cetak/laporan-perubahan-modal', [CetakController::class,'laporanPerubahanModal']);
 Route::get('admin/cetak/laporan-posisi-keuangan', [CetakController::class,'laporanPosisiKeuangan']);
+Route::get('admin/cetak/laporan-arus-kas', [CetakController::class,'laporanArusKas']);
+Route::get('admin/cetak/laporan-alk', [CetakController::class,'laporanALK']);
 Route::get('admin/cetak/laporan-calk', [CetakController::class,'laporanCalk']);
 Route::get('admin/cetak/saldo-anggota', [CetakController::class,'saldoAnggota']);
 Route::get('admin/cetak/piutang-anggota', [CetakController::class,'piutangAnggota']);
