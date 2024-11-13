@@ -928,6 +928,32 @@ class CetakController extends Controller
         }
 
         // $final
+        $coas = MasterCoa::whereRaw('LENGTH(kode_coa) >= 4')->orderBy('kode_coa','ASC')->get();
+
+        // return response()->json([$old,$now,$total]);
+        $laporan_akun = $this->shu_all($coas,$request->tgl_awal,$request->tgl_akhir,$request->identitas_koperasi_id);
+
+        $data['query'] = $_SERVER['QUERY_STRING'];
+
+        $dataCOA = $laporan_akun->toArray();
+
+        // Variabel untuk menyimpan subtotal per kategori
+        $operasional = [];
+        $investasi = [];
+        $pendanaan = [];
+
+        foreach ($dataCOA as $flow) {
+            $kode = $flow['kode_coa'];
+
+            // Klasifikasi berdasarkan kode
+            if ($kode >= 4100 && $kode < 5000) {
+                $operasional[] = $flow;
+            } elseif ($kode >= 1200 && $kode < 1300) {
+                $investasi[] = $flow;
+            } elseif ($kode >= 2100 && $kode < 2300) {
+                $pendanaan[] = $flow;
+            }
+        }
 
         $final_total = [];
         $final_total['aset'] = $tot_lap_shu['aset_lancar'] + $tot_lap_shu['aset_tidak_lancar'] + $tot_lap_shu['aset_tetap'] + $tot_lap_shu['aset_lainnya'];
@@ -941,8 +967,11 @@ class CetakController extends Controller
         $data['tgl_awal'] = $request->tgl_awal;
         $data['tgl_akhir'] = $request->tgl_akhir;
 
-        // dd($data);
-        return view('cetak.laporan-posisi-keuangan',$data);
+        $data['dataCOA'] = $dataCOA;
+        $data['operasional'] = $operasional;
+        $data['investasi'] = $investasi;
+        $data['pendanaan'] = $pendanaan;
+        return view('cetak.laporan-arus-kas',$data);
     }
 
 
