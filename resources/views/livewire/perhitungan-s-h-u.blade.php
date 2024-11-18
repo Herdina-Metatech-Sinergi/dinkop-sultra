@@ -63,6 +63,56 @@
             <x-table-sm.table-tr>
 
                 <x-table-sm.table-th customClass='text-center'>
+                   Cadangan
+                </x-table-sm.table-th>
+                <x-table-sm.table-td>
+                    {{ App\Http\Controllers\Controller::rupiah(@$cadangan) }}
+                </x-table-sm.table-td>
+            </x-table-sm.table-tr>
+
+            <x-table-sm.table-tr>
+
+                <x-table-sm.table-th customClass='text-center'>
+                    Dana Pendidikan
+                </x-table-sm.table-th>
+                <x-table-sm.table-td>
+                    {{ App\Http\Controllers\Controller::rupiah(@$dana_pendidikan) }}
+                </x-table-sm.table-td>
+            </x-table-sm.table-tr>
+
+            <x-table-sm.table-tr>
+
+                <x-table-sm.table-th customClass='text-center'>
+                    Insentif Pengurus dan Pengawas
+                </x-table-sm.table-th>
+                <x-table-sm.table-td>
+                    {{ App\Http\Controllers\Controller::rupiah(@$insentif_pengurus_pengawas) }}
+                </x-table-sm.table-td>
+            </x-table-sm.table-tr>
+
+            <x-table-sm.table-tr>
+
+                <x-table-sm.table-th customClass='text-center'>
+                    Insentif Pengelola
+                </x-table-sm.table-th>
+                <x-table-sm.table-td>
+                    {{ App\Http\Controllers\Controller::rupiah(@$insentif_pengelola) }}
+                </x-table-sm.table-td>
+            </x-table-sm.table-tr>
+
+            <x-table-sm.table-tr>
+
+                <x-table-sm.table-th customClass='text-center'>
+                    Dana Sosial
+                </x-table-sm.table-th>
+                <x-table-sm.table-td>
+                    {{ App\Http\Controllers\Controller::rupiah(@$dana_sosial) }}
+                </x-table-sm.table-td>
+            </x-table-sm.table-tr>
+
+            <x-table-sm.table-tr>
+
+                <x-table-sm.table-th customClass='text-center'>
                     Total Simpanan
                 </x-table-sm.table-th>
                 <x-table-sm.table-td>

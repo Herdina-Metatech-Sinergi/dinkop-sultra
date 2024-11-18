@@ -41,6 +41,13 @@ class PerhitunganSHU extends Component implements HasForms
     public $total_transaksi = 0;
     public $anggota_koperasi = [];
 
+    public $mbs;
+    public $cadangan; // % Cadangan
+    public $dana_pendidikan; // % Dana Pendidikan
+    public $insentif_pengurus_pengawas; // % Insentif Pengurus Pengawas
+    public $insentif_pengelola; // % Insentif Pengelola
+    public $dana_sosial; // % Dana Sosial
+
     public function mount(){
         if (auth()->user()->hasRole('Admin Dinkop')) {
             $firstOption = IdentitasKoperasi::get()->pluck('id')->first();
@@ -57,6 +64,7 @@ class PerhitunganSHU extends Component implements HasForms
         $mbs = MasterBagianSHU::where('identitas_koperasi_id',$firstOption)->first();
 
         if ($mbs) {
+            $this->mbs = $mbs;
             # code...
             $this->filters['bagian_anggota']  = $mbs->shu_bagian_anggota;
             $this->filters['simpanan']  = $mbs->shu_untuk_simpanan;
@@ -165,6 +173,12 @@ class PerhitunganSHU extends Component implements HasForms
 
         //SHU Bag Anggota
         $this->shu_bag_anggota = $shu * $filters['bagian_anggota'] / 100;
+
+        $this->cadangan = $shu * $this->mbs->cadangan / 100;
+        $this->dana_pendidikan = $shu * $this->mbs->dana_pendidikan / 100;
+        $this->insentif_pengurus_pengawas = $shu * $this->mbs->insentif_pengurus_pengawas / 100;
+        $this->insentif_pengelola = $shu * $this->mbs->insentif_pengelola / 100;
+        $this->dana_sosial = $shu * $this->mbs->dana_sosial / 100;
 
         //SHU simpanan
         $this->shu_simpanan = $this->shu_bag_anggota * $filters['simpanan'] / 100;

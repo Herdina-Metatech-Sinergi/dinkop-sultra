@@ -52,28 +52,12 @@ class MasterBagianSHUResource extends Resource
 
                     return $firstOption;
                 })->required()->searchable()->label('Koperasi'),
-                Forms\Components\TextInput::make('total_shu')
-                    ->label('Total SHU Koperasi')
+                Forms\Components\TextInput::make('cadangan')
+                    ->label('% Cadangan')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('shu_bagian_anggota')
                     ->label('% SHU Bagian Anggota')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('simpanan_anggota')
-                    ->label('Simpanan Anggota yang Bersangkutan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('total_simpanan_anggota')
-                    ->label('Total Simpanan Seluruh Anggota')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('transaksi_anggota')
-                    ->label('Transaksi Anggota yang Bersangkutan')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('total_transaksi_anggota')
-                    ->label('Total Transaksi Seluruh Anggota')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('shu_untuk_simpanan')
@@ -81,7 +65,23 @@ class MasterBagianSHUResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('shu_untuk_transaksi')
-                    ->label('% SHU untuk Transaksi Anggota')
+                    ->label('% SHU untuk Transaksi Anggota')->numeric(),
+
+                Forms\Components\TextInput::make('dana_pendidikan')
+                    ->label('% Dana Pendidikan')
+                    ->required()
+                    ->numeric(),
+
+                Forms\Components\TextInput::make('insentif_pengurus_pengawas')
+                    ->label('% Insentif Pengurus Pengawas')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('insentif_pengelola')
+                    ->label('% Insentif Pengelola')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('dana_sosial')
+                    ->label('% Dana Sosial')
                     ->required()
                     ->numeric(),
             ]);
@@ -91,31 +91,41 @@ class MasterBagianSHUResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('total_shu')
+                Tables\Columns\TextColumn::make('cadangan')
+                    ->label('% Cadangan')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('shu_bagian_anggota')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('simpanan_anggota')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('total_simpanan_anggota')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('transaksi_anggota')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('total_transaksi_anggota')
+                    ->label('% SHU Bagian Anggota')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('shu_untuk_simpanan')
+                    ->label('% SHU untuk Simpanan')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('shu_untuk_transaksi')
+                    ->label('% SHU untuk Transaksi Anggota')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('identitas_koperasi_id')
+                Tables\Columns\TextColumn::make('dana_pendidikan')
+                    ->label('% Dana Pendidikan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('insentif_pengurus_pengawas')
+                    ->label('% Insentif Pengurus Pengawas')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('insentif_pengelola')
+                    ->label('% Insentif Pengelola')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('dana_sosial')
+                    ->label('% Dana Sosial')
+                    ->numeric()
+                    ->sortable(),
+
+
+                Tables\Columns\TextColumn::make('identitas_koperasi.nama_koperasi')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
