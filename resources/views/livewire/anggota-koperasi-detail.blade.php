@@ -736,7 +736,7 @@
                                                                     Status Pokok
                                                                 </x-table-sm.table-th>
                                                                 <x-table-sm.table-th customClass='text-center'>
-                                                                    Angsuran Bunga
+                                                                    Angsuran Jasa
                                                                 </x-table-sm.table-th>
                                                                 <x-table-sm.table-th customClass='text-center'>
                                                                     Status Bunga
@@ -834,7 +834,7 @@
 
                                                                             @if ($data2['status_bunga'] != 'Lunas')
                                                                                 <x-button.button-only-add color="danger"
-                                                                                    onclick="confirm('Bayar angsuran bunga?') || event.stopImmediatePropagation()"
+                                                                                    onclick="confirm('Bayar angsuran Jasa?') || event.stopImmediatePropagation()"
                                                                                     wire:click="goBayarAngsuranJasa({{ $data2['id'] }})"
                                                                                     wire:loading.attr="disabled"
                                                                                     wire:loading.class.delay="opacity-70 cursor-wait">

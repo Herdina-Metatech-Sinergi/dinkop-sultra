@@ -894,7 +894,7 @@ class AnggotaKoperasiDetail extends Component implements HasForms
         KreditAngsuran::where('id', $id)->update(['status_bunga' => 'Lunas']);
 
         // Add notification or any additional logic
-        Notification::make()->title('Angsuran Bunga berhasil dilunasi!')->success()->send();
+        Notification::make()->title('Angsuran Jasa berhasil dilunasi!')->success()->send();
     }
 
 

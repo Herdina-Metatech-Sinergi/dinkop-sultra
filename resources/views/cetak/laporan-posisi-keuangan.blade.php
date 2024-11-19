@@ -267,7 +267,7 @@
                         <tr>
                             <td>
 
-                                <b>{{ ucwords(str_replace('_', ' ', 'hutang_lancar')) }}</b>
+                                <b>{{ ucwords(str_replace('_', ' ', 'liabilitas_lancar')) }}</b>
                             </td>
                             <td style="text-align: right">
 
@@ -317,7 +317,7 @@
                         <tr>
                             <td>
 
-                                <b>{{ ucwords(str_replace('_', ' ', 'hutang_jangka_panjang')) }}</b>
+                                <b>{{ ucwords(str_replace('_', ' ', 'liabilitas_jangka_panjang')) }}</b>
                             </td>
                             <td style="text-align: right">
 
@@ -367,7 +367,7 @@
                         <tr>
                             <td>
 
-                                <b>{{ ucwords(str_replace('_', ' ', 'modal')) }}</b>
+                                <b>{{ ucwords(str_replace('_', ' ', 'ekuitas')) }}</b>
                             </td>
                             <td style="text-align: right">
 
@@ -461,7 +461,7 @@
                         <tr>
                             <td>
 
-                                <b>{{ ucwords(str_replace('_', ' ', 'shu')) }}</b>
+                                <b>{{ ucwords(str_replace('_', ' ', 'ekuitas')) }}</b>
                             </td>
                             <td style="text-align: right">
 

@@ -222,7 +222,7 @@
 
                                                 @if ($data2['status_bunga'] != 'Lunas')
                                                     <x-button.button-only-add color="danger"
-                                                        onclick="confirm('Bayar angsuran bunga?') || event.stopImmediatePropagation()"
+                                                        onclick="confirm('Bayar angsuran jasa?') || event.stopImmediatePropagation()"
                                                         wire:click="goBayarAngsuranJasa({{ $data2['id'] }})"
                                                         wire:loading.attr="disabled"
                                                         wire:loading.class.delay="opacity-70 cursor-wait">
