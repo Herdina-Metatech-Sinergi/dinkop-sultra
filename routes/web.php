@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CetakController;
+use App\Http\Controllers\Publik\AnggotaController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\IndexController;
 use App\Http\Controllers\Web\SearchController;
@@ -41,3 +42,4 @@ Route::get('admin/cetak/laporan-calk', [CetakController::class,'laporanCalk']);
 Route::get('admin/cetak/saldo-anggota', [CetakController::class,'saldoAnggota']);
 Route::get('admin/cetak/piutang-anggota', [CetakController::class,'piutangAnggota']);
 
+Route::get('admin/cek-anggota',[AnggotaController::class,'cek_anggota']);

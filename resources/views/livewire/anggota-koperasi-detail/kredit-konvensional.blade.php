@@ -2,8 +2,13 @@
     {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
 
     <form wire:submit.prevent="submitKredit">
+        @if (auth()->user())
+
         {{ $this->formKreditKonvensional }}
+        @endif
         <p><br></p>
+        @if (auth()->user())
+
         <x-button.button color="primary" wire:loading.attr="disabled" wire:loading.class.delay="opacity-70 cursor-wait"
             wire:click="submitKredit()">
             <x-slot:custom_svg>
@@ -11,6 +16,7 @@
             </x-slot:custom_svg>
             Submit
         </x-button.button>
+        @endif
     </form>
     <p><br></p>
 
@@ -91,6 +97,8 @@
                             {{ @$data['jangka_waktu'] }}
                         </x-table-sm.table-td>
                         <x-table-sm.table-td>
+                            @if (auth()->user())
+
                             <x-button.button-only-edit color="warning"
                                 wire:click="goUbahItemKredit({{ $data['id'] }})"
                                 wire:loading.attr="disabled"
@@ -102,6 +110,7 @@
                                 wire:loading.attr="disabled"
                                 wire:loading.class.delay="opacity-70 cursor-wait">
                             </x-button.button-only-delete>
+                            @endif
                         </x-table-sm.table-td>
                     </x-table-sm.table-tr>
 
