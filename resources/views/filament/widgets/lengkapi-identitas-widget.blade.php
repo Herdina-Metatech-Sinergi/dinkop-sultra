@@ -1,6 +1,9 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         {{-- Widget content --}}
+        <p style="font-size: 12px">
+            Jika mengalami kendala, silakan <a href="https://wa.me/6285186060059" target="_blank">hubungi admin via WhatsApp disini</a>.
+        </p>
         @if ($data['identitas'])
         <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md">
             <h2 class="grid flex-1 text-base font-semibold leading-6 text-gray-950 dark:text-white">Selamat datang, Koperasi {{ $data['identitas']->nama_koperasi }}</h2>
