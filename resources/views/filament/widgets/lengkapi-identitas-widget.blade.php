@@ -4,6 +4,10 @@
         <p style="font-size: 12px">
             Jika mengalami kendala, silakan <a href="https://wa.me/6285186060059" target="_blank">hubungi admin via WhatsApp disini</a>.
         </p>
+
+        <p style="font-size: 12px">
+            Pedoman aplikasi, silakan <a href="https://drive.google.com/file/d/1yOEpdLkK-VhmbG0xPuifG0DhNbTOboH3/view?usp=sharing" target="_blank">lihat disini</a>.
+        </p>
         @if ($data['identitas'])
         <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-md">
             <h2 class="grid flex-1 text-base font-semibold leading-6 text-gray-950 dark:text-white">Selamat datang, Koperasi {{ $data['identitas']->nama_koperasi }}</h2>
